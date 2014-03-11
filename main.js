@@ -5,6 +5,7 @@
 require.config({
   baseUrl: '.',
   paths:{
+    jquery: '../bower_components/jquery/dist/jquery',
     lodash: 'bower_components/lodash/dist/lodash.compat'
   },
   packages: [
@@ -12,11 +13,6 @@ require.config({
       name: 'when',
       location: 'bower_components/when',
       main: 'when.js'
-    },
-    {
-      name: 'jquery',
-      location: 'bower_components/jquery/dist',
-      main: 'jquery.js'
     },
     {
       name: 'poly',
