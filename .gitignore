@@ -1,0 +1,14 @@
+.project
+.settings
+.externalToolBuilders
+.idea
+.DS_Store
+.orig
+*.log
+
+dist
+release
+node_modules
+bower_components
+
+css/*.css
