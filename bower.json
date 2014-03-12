@@ -20,7 +20,7 @@
     "requirejs-text": "~2.0.10",
     "troopjs-requirejs": "~2.1.0",
     "recorder.js": "http://github.com/garryyao/recorder.js.git#dist",
-    "when": "2.1.1",
+    "when": "~2.1.1",
     "lodash": "~2.4.1",
     "mu-template": "~1.0.4",
     "has": "*"
