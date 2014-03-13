@@ -7,20 +7,18 @@ module.exports = function (grunt) {
   grunt.registerTask("default", [
     //'jshint:source',
     'clean:dist',
-    'useminPrepare',
     'concurrent:dist',
     'autoprefixer',
     'copy:dist',
     'requirejs-transformconfig:dist',
     'requirejs',
-    'concat',
-    'clean:after-dist'
+    'cssmin',
+    'uglify'
   ]);
 
   grunt.registerTask('release', [
     'clean:release',
     'default',
-    'cssmin',
     'copy:release'
   ]);
 
@@ -46,7 +44,6 @@ module.exports = function (grunt) {
     bowerDir: 'bower_components',
     clean: {
       dist: 'dist/',
-      'after-dist': ['dist/<%= bowerDir %>', 'dist/main.js'],
       release: 'release/'
     },
     jshint: {
@@ -191,53 +188,22 @@ module.exports = function (grunt) {
         options: {
           baseUrl: 'dist',
           mainConfigFile: 'main.js',
-          out: 'dist/nodeps.js',
-          include: includeSource(['widget/**/*.js', 'main.js']),
+          out: 'dist/main.js',
+          include: includeSource(['widget/**/*.js']),
+          paths: {
+            // The config module is from the production html page.
+            'jquery': 'empty:',
+            'lodash': 'empty:'
+          },
+          exclude: [ 'template', 'text', 'when', 'lodash', 'poly'],
           optimize: 'none'
         }
       }
     },
-    concat: {
-      dist: {
-        src: ['<%= bowerDir %>/requirejs/require.js', 'dist/nodeps.js'],
-        dest: 'dist/nodeps.js'
-      }
-    },
     uglify: {
       dist: {
-        src: [ , 'dist/nodeps.js'],
-        dest: 'dist/nodeps.min.js'
-      }
-    },
-    // Reads HTML for usemin blocks to enable smart builds that automatically
-    // concat, minify and revision files. Creates configurations in memory so
-    // additional tasks can operate on them
-    useminPrepare: {
-      html: 'index.html',
-      options: {
-        dest: 'dist/'
-      }
-    },
-    // Performs rewrites based on rev and the useminPrepare configuration
-    usemin: {
-      html: ['dist/{,*/}*.html'],
-      css: ['dist/css/{,*/}*.css'],
-      options: {
-        assetsDirs: ['dist/']
-      }
-    },
-    // The following *-min tasks produce minified files in the dist folder
-    htmlmin: {
-      dist: {
-        options: {
-          collapseWhitespace: true,
-          collapseBooleanAttributes: true,
-          removeCommentsFromCDATA: true,
-          removeOptionalTags: true
-        },
-        files: {
-          'dist/index.html': 'index.html'
-        }
+        src: ['dist/main.js'],
+        dest: 'dist/main.min.js'
       }
     },
     imagemin: {
@@ -257,13 +223,11 @@ module.exports = function (grunt) {
     concurrent: {
       'release': [
         'less',
-        'imagemin',
-        'htmlmin'
+        'imagemin'
       ],
       dist: [
         'less',
-        'imagemin',
-        'htmlmin'
+        'imagemin'
       ]
     }
   });
