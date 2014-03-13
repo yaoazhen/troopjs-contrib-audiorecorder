@@ -5,7 +5,7 @@
 require.config({
   baseUrl: '.',
   paths:{
-    jquery: '../bower_components/jquery/dist/jquery',
+    jquery: 'bower_components/jquery/dist/jquery',
     lodash: 'bower_components/lodash/dist/lodash.compat'
   },
   packages: [
@@ -80,11 +80,12 @@ require.config({
 
     // Configure recording audio upload server.
     'troopjs-recorder/widget/service': {
-      upload: {
+      upload:{
         method: 'POST',
-        url: 'http://up.qiniu.com/',
-        audioParam: 'file',
-        audioFormat: 1 // mp3
+        url: 'http://10.43.224.10:8085/media/upload'
+      },
+      download:{
+        url: 'http://10.43.224.10:8085/media?id='
       }
     }
   },

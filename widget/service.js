@@ -8,7 +8,11 @@ define([
 ], function (module, Service, recorderRequire, Recorder, when, _) {
   'use strict';
 
-  var moduleCfg = module.config().upload;
+  var moduleCfg = module.config();
+
+  var uploadCfg = moduleCfg.upload;
+  var downloadCfg = moduleCfg.download;
+
 
   return Service.extend({
     'sig/start': function () {
@@ -61,10 +65,17 @@ define([
         // 1. module config;
         // 2. function params;
         // 3. local callbacks.
-        var cfg = _.extend({}, moduleCfg, options, {
+        var cfg = _.extend({}, uploadCfg, options, {
           success: function (responseText) {
             var retval = JSON.parse(responseText);
-            retval.success ? resolve(retval) : reject(retval);
+            
+            if (downloadCfg) {
+              retval.id ? resolve(downloadCfg.url + retval.id) : reject(retval);
+            }
+            else {
+              resolve(retval);
+            }
+
           },
           progress: notify,
           error: reject
