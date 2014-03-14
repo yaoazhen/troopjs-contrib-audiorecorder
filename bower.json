@@ -6,33 +6,22 @@
     "node_modules"
   ],
   "dependencies": {
-    "gudstrap": "http://github.com/englishtown/gudstrap.git#develop",
-    "jquery": "~1.11",
-    "json3": "~3.2.6",
-    "es5-shim": "~2.1.0",
-    "requirejs": "~2",
     "troopjs-core": "~2.1.0",
     "troopjs-browser": "~2.1.0",
-    "troopjs-data": "~3.0.0",
-    "troopjs-jquery": "~2.1.0",
-    "troopjs-utils": "~2.1.0",
-    "troopjs-ef": "https://stash.englishtown.com/scm/share/troopjs-ef.git#~2.1.0",
-    "requirejs-text": "~2.0.10",
     "troopjs-requirejs": "~2.1.0",
     "recorder.js": "http://github.com/garryyao/recorder.js.git#dist",
-    "when": "~2.1.1",
-    "lodash": "~2.4.1",
-    "mu-template": "~1.0.4",
-    "has": "*"
+    "when": "~2",
+    "lodash": "~2",
+    "jquery": "~1",
+    "mu-template": "~1",
+    "requirejs-text": "~2"
   },
   "devDependencies": {
     "less": "~1.6.1"
   },
   "resolutions": {
-    "jquery": "~1.11",
+    "troopjs-utils": "~2",
     "troopjs-core": "~2.1.0",
-    "troopjs-utils": "~2.1.0",
-    "troopjs-jquery": "~2.1.0",
-    "when": "~2.7"
+    "jquery": "~1"
   }
 }
