@@ -78,6 +78,10 @@ require.config({
       unweave: 'data-unweave-2'
     },
 
+    'troopjs-recorder/widget/main': {
+      // Custom base CSS class name for the recorder widget.
+      'cls': ''
+    },
     // Configure recording audio upload server.
     'troopjs-recorder/widget/service': {
       upload:{

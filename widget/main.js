@@ -3,32 +3,43 @@
  *
  */
 define([
+  'module',
   'troopjs-browser/component/widget',
   'when',
   'lodash',
   './states',
   'template!./main.html'
-], function (Widget, when, _, STATES, tHtml) {
+], function (module, Widget, when, _, STATES, tHtml) {
   'use strict';
 
-  var SEL_RECORDER = '.et-recorder';
-  var SEL_BTN = '.et-recorder-btn';
-  var SEL_TIMER = ".et-recorder-timer";
-  var SEL_INDICATOR = ".et-recorder-indicator span";
+  var CLS = (module.config()['cls'] || 'et-recorder');
+  var SEL_BASE = '.' + CLS;
+  var prefix = '.' + CLS + '-';
+  var SEL_BTN = prefix + 'btn';
+  var SEL_TIMER = prefix + 'timer';
+  var SEL_INDICATOR = prefix + 'indicator span';
 
   var $ELEMENT = '$element';
   var CONFIGURATION = 'configuration';
 
+  var CLS_START = 'init';
+  var CLS_DISABLED = 'disabled';
+  var CLS_STOPPED = 'stop';
+  var CLS_RECODING = 'recording';
+  var CLS_PLAYING = 'playing';
+  var CLS_PROCESSING = 'uploading';
+  var CLS_ERROR = 'error';
 
-  var CLS_BASE = 'et-recorder';
+  var reset = 'dom:' + prefix + 'reset-btn/click';
+  var upload = 'dom:' + prefix + 'upload-btn/click';
 
-  var CLS_START = 'et-recorder-init';
-  var CLS_DISABLED = 'et-recorder-disabled';
-  var CLS_STOPPED = 'et-recorder-stop';
-  var CLS_RECODING = 'et-recorder-recording';
-  var CLS_PLAYING = 'et-recorder-playing';
-  var CLS_PROCESSING = 'et-recorder-uploading';
-  var CLS_ERROR = 'et-recorder-error';
+  var DOM_HANDLERS = {};
+  DOM_HANDLERS[reset] = function () {
+    this.state(STATES.START);
+  };
+  DOM_HANDLERS[upload] = function () {
+    this.upload();
+  };
 
   // Handles the widget instantiation.
   return Widget.extend(function ($element, name, options) {
@@ -38,10 +49,10 @@ define([
     // Handles the widget starting.
     'sig/start': function initialize() {
       var me = this;
-      me.html(tHtml());
+      me.html(tHtml({ cls : CLS}));
       var $el = me[$ELEMENT];
 
-      me.$recorder = $el.find(SEL_RECORDER);
+      me.$recorder = $el.find(SEL_BASE);
       me.$btn = $el.find(SEL_BTN);
       me.$timer = $el.find(SEL_TIMER);
       me.$indicator = $el.find(SEL_INDICATOR);
@@ -56,14 +67,6 @@ define([
         action.call(me);
       }
     },
-    'dom:.et-recorder-reset-btn/click': function () {
-      this.state(STATES.START);
-    },
-
-    'dom:.et-recorder-upload-btn/click': function () {
-      this.upload();
-    },
-
     'hub/recorder/stop/stopped': function () {
       this.state(STATES.START);
     },
@@ -84,11 +87,11 @@ define([
       var me = this;
       return me.publish('troopjs-recorder/stop').then(function () {
         return me.publish('recorder/record')
-          .then(function () {
-            me.state(STATES.RECORDING);
-          }).catch(function () {
-            me.state(STATES.START);
-          });
+            .then(function () {
+              me.state(STATES.RECORDING);
+            }).catch(function () {
+              me.state(STATES.START);
+            });
       });
     },
 
@@ -124,12 +127,12 @@ define([
         me.state(STATES.START);
 
       }).otherwise(function () {
-          // Display the error message with disabled state for 2s and recover.
-          me.toggleCls([CLS_DISABLED, CLS_ERROR].join(' '));
-          _.delay(function() {
-            me.state(STATES.START);
-          }, 2000);
-        });
+            // Display the error message with disabled state for 2s and recover.
+            me.toggleCls([CLS_DISABLED, CLS_ERROR].join(' '));
+            _.delay(function () {
+              me.state(STATES.START);
+            }, 2000);
+          });
     },
 
     updateUI: function () {
@@ -178,7 +181,8 @@ define([
     },
 
     toggleCls: function (cls) {
-      this.$recorder.attr('class', [CLS_BASE, cls || ''].join(' '));
+      cls = [CLS, cls || ''].join(' ');
+      this.$recorder.attr('class', cls);
     }
-  });
+  }, DOM_HANDLERS);
 });
