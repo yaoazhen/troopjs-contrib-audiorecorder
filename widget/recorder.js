@@ -5,7 +5,8 @@
 define([
   'troopjs-browser/component/widget',
   'when',
-  './states'
+  './states',
+  '../service/recorder'
 ], function (Widget, when, STATES) {
   'use strict';
 

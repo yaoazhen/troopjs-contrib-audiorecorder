@@ -14,7 +14,7 @@ define([
   var downloadCfg = moduleCfg.download;
 
 
-  return Service.extend({
+  var service = Service.create({
     'sig/start': function () {
       // Load the SWF for initializing recorder which sits by side of the module main js.
       var swfFilePath = recorderRequire.toUrl("recorder.swf");
@@ -85,4 +85,6 @@ define([
       });
     }
   });
+  service.start();
+  return service;
 });

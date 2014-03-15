@@ -92,11 +92,10 @@ require.config({
   callback: function loadDeps() {
     require([
       'jquery',
-      'troopjs-browser/application/widget',
-      'troopjs-recorder/widget/service'
-    ], function Bootstrap(jQuery, Application, RecordingService) {
+      'troopjs-browser/application/widget'
+    ], function Bootstrap(jQuery, Application) {
       jQuery(function ready($) {
-        Application($('html'), 'bootstrap', RecordingService()).start();
+        Application($('html'), 'bootstrap').start();
       });
     });
   }
