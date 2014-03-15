@@ -79,17 +79,17 @@ module.exports = function (grunt) {
     less: {
       development: {
         options: {
-          paths: ['css/{,*/}*.less']
+          paths: ['examples/css/']
         },
         files: {
-          'css/main.css': 'css/main.less'
+          'examples/css/main.css': 'examples/css/main.less'
         }
       }
     },
     cssmin: {
       dist: {
         files: {
-          'dist/css/main.min.css': [
+          'dist/examples/css/main.min.css': [
             'dist/css/{,*/}*.css'
           ]
         }
@@ -113,6 +113,9 @@ module.exports = function (grunt) {
     },
     // Watches files for changes and runs tasks based on the changed files
     watch: {
+      options: {
+        cwd: 'examples/'
+      },
       js: {
         files: ['widget/{,*/}*.js'],
         options: {

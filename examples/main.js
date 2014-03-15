@@ -3,7 +3,7 @@
 'use strict';
 
 require.config({
-  baseUrl: '.',
+  baseUrl: '../',
   paths:{
     jquery: 'bower_components/jquery/dist/jquery',
     lodash: 'bower_components/lodash/dist/lodash.compat'
@@ -78,10 +78,6 @@ require.config({
       unweave: 'data-unweave-2'
     },
 
-    'troopjs-recorder/widget/main': {
-      // Custom base CSS class name for the recorder widget.
-      'cls': ''
-    },
     // Configure recording audio upload server.
     'troopjs-recorder/widget/service': {
       upload:{
