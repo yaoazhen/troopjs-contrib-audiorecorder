@@ -74,7 +74,7 @@ define([
     },
     
     'sig/volumn': function (volume) {
-      this.$indicator.animate({'width': volume + '%'}, { duration: 50});
+      this.$indicator.animate({'width': volume * 5 + '%'}, { duration: 50});  // Amplification.
     },
     'sig/upload': function (err, data) {
       if(err){
