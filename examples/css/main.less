@@ -1,122 +1,204 @@
 // Global - Variables and Mixins.
 
-@import "indicator";
+.rounded(@radius;) {
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+  border-radius: @radius;
+}
+
+.transition(@transite;) {
+  -webkit-transition: @transite;
+  -moz-transition: @transite;
+  transition: @transite;
+}
+
+.gradient(@stop1; @stop2) {
+  background-image: linear-gradient(bottom, @stop1 0%, @stop2 57%);
+  background-image: -o-linear-gradient(bottom, @stop1 0%, @stop2 57%);
+  background-image: -moz-linear-gradient(bottom, @stop1 0%, @stop2 57%);
+  background-image: -webkit-linear-gradient(bottom, @stop1 0%, @stop2 57%);
+  background-image: -ms-linear-gradient(bottom, @stop1 0%, @stop2 57%);
+}
+
 .et-recorder {
-  background-color: #252525;
-  width: 400px;
-  height: 400px;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 0px;
-  margin-top: 0px;
-  -webkit-border-radius: 200px;
-  -moz-border-radius: 200px;
-  border-radius: 200px;
-  -webkit-box-shadow: inset 0px 2px 0px #585858, 1px 1px 0px #000, 2px 2px 5px #000;
-  -moz-box-shadow: inset 0px 2px 0px #585858, 1px 1px 0px #000, 2px 2px 5px #000;
-  box-shadow: inset 0px 2px 0px #585858, 1px 1px 0px #000, 2px 2px 5px #000;
+  @size: 200px; // Scalable recorder size, change to your prefered size.
+  @shadow-depth: @size*.0125;
+  @btn-depth: @size*.0125;
+  @chrome-color: #252525;
+  @btn-color: #a8a8a8;
+  @recording: #e94545;
+  @playing: #22a9db;
+  @playing-hover: lighten(@playing, 10%);
+
+  @icon-size: @size/8;
+  @dot-size: @icon-size*2;
+  @square-size: @icon-size*1.8;
+  @icon-width: @square-size;
+
+  width: @size;
+  height: @size;
+  .rounded(@size/2);
+  background-color: @chrome-color;
+  box-shadow: inset 0px 2px 0px darken(@chrome-color, 20%), 1px 1px 0px #000, 2px 2px @shadow-depth #000;
+
+  @btn-size: @size*.75;
+  @hole-color: #151515;
 
   .hole {
-    background-color: #151515;
-    width: 310px;
-    height: 310px;
-    margin-left: auto;
-    margin-right: auto;
-    top: 50px;
+    margin: auto;
+    background-color: @hole-color;
+    width: @btn-size;
+    height: @btn-size;
+    top: (@size - @btn-size)/2;
+    .rounded(@size*.38);
     position: relative;
-    -webkit-border-radius: 155px;
-    -moz-border-radius: 155px;
-    border-radius: 155px;
-    -webkit-box-shadow: 1px 1px 0px #5d5d5d;
-    -moz-box-shadow: 1px 1px 0px #5d5d5d;
-    box-shadow: 1px 1px 0px #5d5d5d;
   }
 
   .btn {
+    top: -@btn-depth;
     display: block;
-    width: 300px;
-    height: 300px;
+    width: @btn-size;
+    height: @btn-size;
     margin-left: auto;
     margin-right: auto;
     overflow: auto;
     cursor: pointer;
-    top: -5px;
     position: relative;
-    background-image: linear-gradient(bottom, rgb(82, 79, 82) 0%, rgb(134, 134, 134) 57%);
-    background-image: -o-linear-gradient(bottom, rgb(82, 79, 82) 0%, rgb(134, 134, 134) 57%);
-    background-image: -moz-linear-gradient(bottom, rgb(82, 79, 82) 0%, rgb(134, 134, 134) 57%);
-    background-image: -webkit-linear-gradient(bottom, rgb(82, 79, 82) 0%, rgb(134, 134, 134) 57%);
-    background-image: -ms-linear-gradient(bottom, rgb(82, 79, 82) 0%, rgb(134, 134, 134) 57%);
-    -webkit-border-radius: 150px;
-    -moz-border-radius: 150px;
-    border-radius: 150px;
-    -webkit-box-shadow: inset 0px 2px 0px #a8a8a8, 0px 2px 0px #2a2a2a, 0px 3px 0px #2a2a2a, 0px 4px 0px #2a2a2a, 0px 5px 0px #2a2a2a, 0px 6px 0px #2a2a2a, 0px 7px 0px #2a2a2a, 0px 8px 0px #2a2a2a, 0px 9px 0px #2a2a2a, 0px 10px 0px #2a2a2a, 10px 20px 10px #000;
-    -moz-box-shadow: inset 0px 2px 0px #a8a8a8, 0px 2px 0px #2a2a2a, 0px 3px 0px #2a2a2a, 0px 4px 0px #2a2a2a, 0px 5px 0px #2a2a2a, 0px 6px 0px #2a2a2a, 0px 7px 0px #2a2a2a, 0px 8px 0px #2a2a2a, 0px 9px 0px #2a2a2a, 0px 10px 0px #2a2a2a, 10px 20px 10px #000;
-    box-shadow: inset 0px 2px 0px #a8a8a8, 0px 2px 0px #2a2a2a, 0px 3px 0px #2a2a2a, 0px 4px 0px #2a2a2a, 0px 5px 0px #2a2a2a, 0px 6px 0px #2a2a2a, 0px 7px 0px #2a2a2a, 0px 8px 0px #2a2a2a, 0px 9px 0px #2a2a2a, 0px 10px 0px #2a2a2a, 10px 20px 10px #000;
-    -webkit-transition: all .2s;
-    -moz-transition: all .2s;
-    transition: all .2s;
+    .gradient(darken(@btn-color, 80%), @btn-color);
+    .rounded(@btn-size/2);
+
+    // cascading drop-down shadow for button.
+    box-shadow: inset 0px 2px 0px @btn-color,
+      0px -1px 0px lighten(@btn-color, 5%),
+      0px -2px 0px lighten(@btn-color, 10%), 0px 2px 0px darken(@btn-color, 50%), 0px 3px 0px darken(@btn-color, 80%), 0px 4px 0px darken(@btn-color, 100%);
   }
 
-  &.recording .btn {
-    top: 5px;
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: inset 0px 2px 0px #a8a8a8;
+  &.recording .btn,
+  &.playing .btn
+  {
+    top: 0;
+    box-shadow: inset 0px 2px 0px @btn-color;
   }
 
-  .icon {
+  .base-icon() {
     margin-left: 50%;
     margin-top: 50%;
-    position: relative;
-    z-index: 2;
+    position: absolute;
   }
-
-  @recording: #e94545;
-  @playing: #22a9db;
-
 
   &.start {
     .icon {
-      width: 0px;
-      height: 0px;
-      left: -27px;
-      top: -50px;
-      border-top: 50px solid transparent;
-      border-bottom: 50px solid transparent;
-      border-left: 80px solid @playing;
-      -webkit-transition: border-left-color .3s;
-      -moz-transition: border-left-color .3s;
-      transition: border-left-color .3s;
+      .base-icon();
+      top: -@dot-size/2 - 2;
+      left: -@dot-size/2 - 2;
+      width: @dot-size;
+      height: @dot-size;
+      .rounded(@dot-size);
+      background-color: @recording;
+
+      border: 2px solid lighten(@btn-color, 20%);
+      box-shadow: inset 0 0 5px rgba(0, 0, 0, .3);
+      .transition(background-color .3s);
     }
 
     .btn:hover .icon {
-      border-left: 80px solid lighten(@playing, 10%);
+      background-color: lighten(@recording, 10%);
     }
 
     .btn:active .icon {
-      border-left: 80px solid @recording;
+      background-color: @recording;
     }
   }
 
-  &.recording {
-    .icon {
-      top: -50px;
-      left: -50px;
-      width: 100px;
-      height: 100px;
-      background-color: @recording;
-      border: 0;
+  &.stopped {
 
-      -webkit-transition: background-color .3s;
-      -moz-transition: background-color .3s;
-      transition: background-color .3s;
+    .icon {
+      .base-icon();
+      width: 0px;
+      height: 0px;
+      left: -@icon-size/2;
+      top: -@icon-size;
+      border-top: @icon-size solid transparent;
+      border-bottom: @icon-size solid transparent;
+      border-left: @icon-width  solid @playing;
+      .transition(border-left-color .3s);
+    }
+
+    .icon:before {
+      .icon();
+      content: " ";
+      border-top-width: @icon-size - 2;
+      border-bottom-width: @icon-size - 2;
+      border-left-width: @icon-width - 2;
+      left: -@icon-width + 1;
+      top: -@icon-size + 2;
+      border-left-color: lighten(@playing, 2%);
+    }
+
+    .icon:after {
+      .icon();
+      content: " ";
+      border-top-width: @icon-size - 6;
+      border-bottom-width: @icon-size - 6;
+      border-left-width: @icon-width - 6;
+      left: -@icon-width + 3;
+      top: -@icon-size + 6;
+      border-left-color: lighten(@playing, 4%);
+    }
+
+    .btn:hover {
+      .icon {
+        border-left-color: @playing-hover;
+      }
+      .icon:before {
+        border-left-color: lighten(@playing-hover, 2%);
+      }
+      .icon:after {
+        border-left-color: lighten(@playing-hover, 4%);
+      }
+    }
+
+    .btn:active {
+      .icon {
+        border-left-color: @recording;
+      }
+      .icon:before {
+        border-left-color: lighten(@recording, 2%);
+      }
+      .icon:after {
+        border-left-color: lighten(@recording, 4%);
+      }
+    }
+  }
+
+  &.recording, &.playing {
+    .icon {
+      .base-icon();
+      top: -@square-size/2;
+      left: -@square-size/2;
+      width: @square-size;
+      height: @square-size;
+      background-color: @recording;
+      box-shadow: inset 0 0 2px rgba(0, 0, 0, .3);
+      .transition(background-color .3s);
     }
 
     .btn:hover .icon {
-      background-color: darken(@recording, 10%);
+      background-color: lighten(@recording, 10%);
     }
 
+    .btn:active .icon {
+      background-color: @recording;
+    }
+  }
+
+  &.playing {
+    .icon{
+      background-color: @playing;
+    }
+    .btn:hover .icon {
+      background-color: lighten(@playing, 10%);
+    }
     .btn:active .icon {
       background-color: @playing;
     }
