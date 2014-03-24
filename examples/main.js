@@ -79,13 +79,10 @@ require.config({
     },
 
     // Configure recording audio upload server.
-    'troopjs-recorder/widget/service': {
+    'troopjs-recorder/service/recorder': {
       upload:{
         method: 'POST',
         url: 'http://10.43.224.10:8085/media/upload'
-      },
-      download:{
-        url: 'http://10.43.224.10:8085/media?id='
       }
     }
   },

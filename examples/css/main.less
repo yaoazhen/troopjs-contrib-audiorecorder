@@ -73,11 +73,14 @@
       0px -2px 0px lighten(@btn-color, 10%), 0px 2px 0px darken(@btn-color, 50%), 0px 3px 0px darken(@btn-color, 80%), 0px 4px 0px darken(@btn-color, 100%);
   }
 
-  &.recording .btn,
-  &.playing .btn
+  &.recording,
+  &.playing,
+  &.uploading
   {
-    top: 0;
-    box-shadow: inset 0px 2px 0px @btn-color;
+    .btn {
+      top: 0;
+      box-shadow: inset 0px 2px 0px @btn-color;
+    }
   }
 
   .base-icon() {
@@ -203,4 +206,47 @@
       background-color: @playing;
     }
   }
+
+  &.upload, &.uploading {
+    @arrow-size: @icon-size*1.5;
+    .icon {
+      .base-icon();
+      width: 0px;
+      height: 0px;
+      left: -@arrow-size;
+      top: -@arrow-size;
+      border-bottom: @arrow-size solid @playing;
+      border-left: @arrow-size solid transparent;
+      border-right: @arrow-size solid transparent;
+    }
+
+    .icon:after {
+      .base-icon();
+      content: " ";
+      top: @arrow-size - 2;
+      left: -@arrow-size/2;
+      width: @arrow-size;
+      height: @arrow-size;
+      background-color: @playing;
+    }
+
+    .btn:hover {
+      .icon {
+        border-bottom-color: lighten(@playing, 10%);
+      }
+      .icon:after{
+        background-color: lighten(@playing, 10%);
+      }
+    }
+  }
+
+  &.uploading{
+    .icon, .btn:hover .icon{
+      border-bottom-color: lighten(@recording, 10%);
+    }
+    .icon:after, .btn:hover .icon:after {
+      background-color: lighten(@recording, 10%);
+    }
+  }
+
 }

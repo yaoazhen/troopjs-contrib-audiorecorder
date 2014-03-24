@@ -83,8 +83,6 @@ define([
         me.signal('upload', null, data);
       }).otherwise(function (err) {
         me.signal('upload', err);
-      }).then(function () {
-        me.state(STATES.START);
       });
       me.state(STATES.UPLOADING);
     },

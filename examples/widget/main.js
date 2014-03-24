@@ -17,6 +17,7 @@ define([
 
   var CLS_DISABLED = 'disabled';
   var CLS_ERROR = 'error';
+  var CLS_UPLOAD = 'upload';
 
   // Handles the widget instantiation.
   return Recorder.extend({
@@ -39,11 +40,14 @@ define([
       }
     },
 
-    'dom:.btn.reset/click': function () {
-    },
     'dom:.btn.upload/click': function () {
       this.upload();
     },
+
+    /**
+     * Handles recorder state transition to determinate what to do next on the button.
+     * @handler
+     */
     'sig/state': function (state) {
 
       var me = this;
@@ -62,9 +66,16 @@ define([
           toggleAction('stop');
           break;
         case STATES.STOPPED:
-          toggleAction('play');
+          // play just once then to upload.
+          if(me.played) {
+            me.toggleState(CLS_UPLOAD);
+            toggleAction('upload');
+          }
+          else
+            toggleAction('play');
           break;
         case STATES.UPLOADING:
+          // button disabled when uploading.
           toggleAction();
           break;
         default:
@@ -72,7 +83,13 @@ define([
           break;
       }
     },
-    
+    'hub/recorder/record': function () {
+      this.played = false;
+    },
+
+    'hub/player/complete': function () {
+      this.played = true;
+    },
     'sig/volumn': function (volume) {
       this.$indicator.animate({'width': volume * 5 + '%'}, { duration: 50});  // Amplification.
     },
@@ -81,6 +98,7 @@ define([
         // Display the error message with disabled state for 2s and recover.
         this.toggleState([CLS_DISABLED, CLS_ERROR].join(' '));
       }
+      this.state(STATES.START);
     }
   });
 });
