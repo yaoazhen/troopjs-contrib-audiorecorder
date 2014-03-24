@@ -5,13 +5,14 @@
 define([
   'troopjs-recorder/widget/recorder',
   'troopjs-recorder/widget/states',
+  'tinycolor',
   'template!./main.html'
-], function (Recorder, STATES, tHtml) {
+], function (Recorder, STATES, color, tHtml) {
   'use strict';
 
   var SEL_BTN = '.btn.primary';
   var SEL_TIMER = '.timer';
-  var SEL_INDICATOR = '.indicator span';
+  var SEL_INDICATOR = '.icon';
 
   var $ELEMENT = '$element';
 
@@ -83,16 +84,28 @@ define([
           break;
       }
     },
+
     'hub/recorder/record': function () {
       this.played = false;
+      this.iconBg = color(this.$indicator.css('background-color'));
+    },
+
+    'hub/recorder/stop': function () {
+      this.$indicator.css('background-color', false);
     },
 
     'hub/player/complete': function () {
       this.played = true;
     },
-    'sig/volumn': function (volume) {
-      this.$indicator.animate({'width': volume * 5 + '%'}, { duration: 50});  // Amplification.
+
+    /**
+     * Handle volume change, indicating by opacity of the icon color.
+     * @handler
+     */
+    'sig/volume': function (volume) {
+      this.$indicator.css('background-color', color.darken(this.iconBg, volume * 3).toRgbString());
     },
+
     'sig/upload': function (err, data) {
       if(err){
         // Display the error message with disabled state for 2s and recover.

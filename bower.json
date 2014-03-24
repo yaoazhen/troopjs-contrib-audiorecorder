@@ -14,7 +14,8 @@
     "lodash": "~2",
     "jquery": "~1",
     "mu-template": "~1",
-    "requirejs-text": "~2"
+    "requirejs-text": "~2",
+    "tinycolor": "~0"
   },
   "devDependencies": {
     "less": "~1.6.1"

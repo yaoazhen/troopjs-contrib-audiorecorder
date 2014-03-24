@@ -57,6 +57,11 @@ require.config({
       "main": "recorder.js"
     },
     {
+      "name": "tinycolor",
+      "location": "bower_components/tinycolor",
+      "main": "tinycolor.js"
+    },
+    {
       "name": "troopjs-recorder",
       location: '.'
     }
