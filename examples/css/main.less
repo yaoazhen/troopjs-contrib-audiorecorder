@@ -34,6 +34,7 @@
   @dot-size: @icon-size*2;
   @square-size: @icon-size*1.8;
   @icon-width: @square-size;
+  @upload-size: @icon-size*1.2;
 
   width: @size;
   height: @size;
@@ -208,25 +209,24 @@
   }
 
   &.upload, &.uploading {
-    @arrow-size: @icon-size*1.5;
     .icon {
       .base-icon();
       width: 0px;
       height: 0px;
-      left: -@arrow-size;
-      top: -@arrow-size;
-      border-bottom: @arrow-size solid @playing;
-      border-left: @arrow-size solid transparent;
-      border-right: @arrow-size solid transparent;
+      left: -@upload-size;
+      top: -@upload-size;
+      border-bottom: @upload-size solid @playing;
+      border-left: @upload-size solid transparent;
+      border-right: @upload-size solid transparent;
     }
 
     .icon:after {
       .base-icon();
       content: " ";
-      top: @arrow-size - 2;
-      left: -@arrow-size/2;
-      width: @arrow-size;
-      height: @arrow-size;
+      top: @upload-size - 2;
+      left: -@upload-size/2;
+      width: @upload-size;
+      height: @upload-size;
       background-color: @playing;
     }
 
