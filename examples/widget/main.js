@@ -91,7 +91,7 @@ define([
     },
 
     'hub/recorder/stop': function () {
-      this.$indicator.css('background-color', false);
+      this.$indicator.css('background-color', '');
     },
 
     'hub/player/complete': function () {
@@ -112,6 +112,11 @@ define([
         this.toggleState([CLS_DISABLED, CLS_ERROR].join(' '));
       }
       this.state(STATES.START);
+    },
+
+    'sig/stop': function () {
+      this.played = false;
+      return this.publish('recorder/stop');
     }
   });
 });
