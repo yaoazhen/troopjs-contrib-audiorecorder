@@ -1,23 +1,7 @@
 // Global - Variables and Mixins.
 
 .rounded(@radius;) {
-  -webkit-border-radius: @radius;
-  -moz-border-radius: @radius;
   border-radius: @radius;
-}
-
-.transition(@transite;) {
-  -webkit-transition: @transite;
-  -moz-transition: @transite;
-  transition: @transite;
-}
-
-.gradient(@stop1; @stop2) {
-  background-image: linear-gradient(bottom, @stop1 0%, @stop2 57%);
-  background-image: -o-linear-gradient(bottom, @stop1 0%, @stop2 57%);
-  background-image: -moz-linear-gradient(bottom, @stop1 0%, @stop2 57%);
-  background-image: -webkit-linear-gradient(bottom, @stop1 0%, @stop2 57%);
-  background-image: -ms-linear-gradient(bottom, @stop1 0%, @stop2 57%);
 }
 
 .et-recorder {
@@ -38,7 +22,7 @@
 
   width: @size;
   height: @size;
-  .rounded(@size/2);
+  border-radius: @size/2;
   background-color: @chrome-color;
   box-shadow: inset 0px 2px 0px darken(@chrome-color, 20%), 1px 1px 0px #000, 2px 2px @shadow-depth #000;
 
@@ -51,7 +35,7 @@
     width: @btn-size;
     height: @btn-size;
     top: (@size - @btn-size)/2;
-    .rounded(@size*.38);
+    border-radius: @size*.38;
     position: relative;
   }
 
@@ -65,19 +49,17 @@
     overflow: auto;
     cursor: pointer;
     position: relative;
-    .gradient(darken(@btn-color, 80%), @btn-color);
-    .rounded(@btn-size/2);
-
+    background-image: linear-gradient(to top, darken(@btn-color, 80%) 0%, @btn-color 57%);
+    border-radius: @btn-size/2;
     // cascading drop-down shadow for button.
     box-shadow: inset 0px 2px 0px @btn-color,
-      0px -1px 0px lighten(@btn-color, 5%),
-      0px -2px 0px lighten(@btn-color, 10%), 0px 2px 0px darken(@btn-color, 50%), 0px 3px 0px darken(@btn-color, 80%), 0px 4px 0px darken(@btn-color, 100%);
+    0px -1px 0px lighten(@btn-color, 5%),
+    0px -2px 0px lighten(@btn-color, 10%), 0px 2px 0px darken(@btn-color, 50%), 0px 3px 0px darken(@btn-color, 80%), 0px 4px 0px darken(@btn-color, 100%);
   }
 
   &.recording,
   &.playing,
-  &.uploading
-  {
+  &.uploading {
     .btn {
       top: 0;
       box-shadow: inset 0px 2px 0px @btn-color;
@@ -97,12 +79,12 @@
       left: -@dot-size/2 - 2;
       width: @dot-size;
       height: @dot-size;
-      .rounded(@dot-size);
+      border-radius: @dot-size;
       background-color: @recording;
 
       border: 2px solid lighten(@btn-color, 20%);
       box-shadow: inset 0 0 5px rgba(0, 0, 0, .3);
-      .transition(background-color .3s);
+      transition: background-color .3s;
     }
 
     .btn:hover .icon {
@@ -125,7 +107,7 @@
       border-top: @icon-size solid transparent;
       border-bottom: @icon-size solid transparent;
       border-left: @icon-width  solid @playing;
-      .transition(border-left-color .3s);
+      transition: border-left-color .3s;
     }
 
     .icon:before {
@@ -184,7 +166,7 @@
       height: @square-size;
       background-color: @recording;
       box-shadow: inset 0 0 2px rgba(0, 0, 0, .3);
-      .transition(background-color .3s);
+      transition: background-color .3s;
     }
 
     .btn:hover .icon {
@@ -197,7 +179,7 @@
   }
 
   &.playing {
-    .icon{
+    .icon {
       background-color: @playing;
     }
     .btn:hover .icon {
@@ -234,14 +216,14 @@
       .icon {
         border-bottom-color: lighten(@playing, 10%);
       }
-      .icon:after{
+      .icon:after {
         background-color: lighten(@playing, 10%);
       }
     }
   }
 
-  &.uploading{
-    .icon, .btn:hover .icon{
+  &.uploading {
+    .icon, .btn:hover .icon {
       border-bottom-color: lighten(@recording, 10%);
     }
     .icon:after, .btn:hover .icon:after {
