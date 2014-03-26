@@ -1,4 +1,6 @@
-define(function() {
+define(function () {
+  'use strict';
+
   return {
     START: 'START',
     STOPPED: 'STOPPED',

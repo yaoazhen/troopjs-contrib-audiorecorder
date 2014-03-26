@@ -52,15 +52,16 @@ define([
     'hub/recorder/record/volume': function (volume) {
       var me = this;
       var state = me.state();
-      if (state === STATES.RECORDING)
+      if (state === STATES.RECORDING) {
         me.signal('volume', volume);
+      }
     },
 
     play: function () {
       var me = this;
       me.publish('player/play').then(function () {
         me.state(STATES.PLAYING);
-      }).otherwise(function() {
+      }).otherwise(function () {
         me.state(STATES.STOPPED);
       });
     },
