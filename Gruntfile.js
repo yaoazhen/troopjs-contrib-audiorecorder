@@ -1,32 +1,21 @@
 /*global module:false*/
 module.exports = function (grunt) {
+  'use strict';
 
-  var path = require('path');
-  require("load-grunt-tasks")(grunt);
+  require('load-grunt-tasks')(grunt);
 
-  grunt.registerTask("default", [
-    //'jshint:source',
+  grunt.registerTask('default', [
+    'jshint:source',
     'clean:dist',
-    'concurrent:dist',
+    'less',
     'autoprefixer',
-    'copy:dist',
-    'requirejs-transformconfig:dist',
     'requirejs',
-    'cssmin',
     'uglify'
-  ]);
-
-  grunt.registerTask('release', [
-    'clean:release',
-    'default',
-    'copy:release'
   ]);
 
   grunt.registerTask('serve', function () {
     grunt.task.run([
       'clean:dist',
-      'concurrent:dist',
-      'autoprefixer',
       'connect:livereload',
       'watch'
     ]);
@@ -51,29 +40,13 @@ module.exports = function (grunt) {
         jshintrc: '.jshintrc'
       },
       source: {
-        src: ['Gruntfile.js', 'main.js', 'widget/**/*.js']
+        src: ['Gruntfile.js', 'widget/**/*.js']
       },
       spec: {
         options: {
           jshintrc: 'test/.jshintrc'
         },
         src: ['test/spec/*.spec.js']
-      }
-    },
-    copy: {
-      dist: {
-        files: [
-          {
-            expand: true,
-            src: ['css/{,*/}*.css', 'widget/**', 'img/**', '<%= bowerDir %>/**/*'],
-            dest: 'dist'
-          }
-        ]
-      },
-      'release': {
-        files: {
-          'release/<%= pkg.version %>/': 'dist/**/*'
-        }
       }
     },
     less: {
@@ -98,20 +71,20 @@ module.exports = function (grunt) {
     // Add vendor prefixed styles
     autoprefixer: {
       options: {
-        browsers: ['last 2 version']
+        browsers: ['> 1%']
       },
       dist: {
         files: [
           {
             expand: true,
-            cwd: 'dist/css/',
+            cwd: 'examples',
             src: 'css/{,*/}*.css',
-            dest: 'dist/css/'
+            dest: 'examples'
           }
         ]
       }
     },
-    // Watches files for changes and runs tasks based on the changed files
+    // Watchers and live-reload for LESS files.
     watch: {
       options: {
         cwd: 'examples/'
@@ -133,8 +106,7 @@ module.exports = function (grunt) {
         files: [
           'index.html',
           'widget/{,*/}*.html',
-          'css/{,*/}*.css',
-          'img/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
+          'css/{,*/}*.css'
         ]
       }
     },
@@ -169,36 +141,22 @@ module.exports = function (grunt) {
         }
       }
     },
-    'requirejs-transformconfig': {
-      options: {
-        // Some transformation goes here.
-        transform: function (config) {
-          // Remove all packages;
-          delete config.packages;
-          return config;
-        }
-      },
-      dist: {
-        files: [
-          {
-            'dist/main.js': 'main.js'
-          }
-        ]
-      }
-    },
     requirejs: {
       dist: {
         options: {
-          baseUrl: 'dist',
-          mainConfigFile: 'main.js',
           out: 'dist/main.js',
-          include: includeSource(['widget/**/*.js']),
+          include: includeSource(['widget/**/*.js', 'service/**/*.js']),
           paths: {
-            // The config module is from the production html page.
+            'troopjs-recorder': '.',
+            'troopjs-core': 'empty:',
+            'troopjs-browser': 'empty:',
+            'recorder': 'empty:',
+            'lodash': 'empty:',
+            'when': 'empty:',
             'jquery': 'empty:',
-            'lodash': 'empty:'
+            'poly': 'empty:',
+            'tinycolor': 'empty:'
           },
-          exclude: [ 'template', 'text', 'when', 'lodash', 'poly'],
           optimize: 'none'
         }
       }
@@ -208,30 +166,6 @@ module.exports = function (grunt) {
         src: ['dist/main.js'],
         dest: 'dist/main.min.js'
       }
-    },
-    imagemin: {
-      dist: {
-        files: [
-          {
-            expand: true,
-            cwd: '/img',
-            src: '{,*/}*.{png,jpg,jpeg,gif}',
-            dest: 'dist/img'
-          }
-        ]
-      }
-    },
-
-    // Run some tasks in parallel to speed up the build process
-    concurrent: {
-      'release': [
-        'less',
-        'imagemin'
-      ],
-      dist: [
-        'less',
-        'imagemin'
-      ]
     }
   });
 };
