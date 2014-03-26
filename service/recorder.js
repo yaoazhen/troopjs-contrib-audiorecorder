@@ -14,7 +14,7 @@ define([
   var downloadCfg = moduleCfg.download;
 
 
-  return Service.extend({
+  var service = Service.create({
     'sig/start': function () {
       // Load the SWF for initializing recorder which sits by side of the module main js.
       var swfFilePath = recorderRequire.toUrl("recorder.swf");
@@ -25,36 +25,46 @@ define([
 
     'hub/recorder/record': function () {
       var me = this;
-      return when.promise(function (resolve, reject) {
-        Recorder.record({
-          start: resolve,
-          progress: function (milliseconds, volume) {
-            me.publish('recorder/record/progress', milliseconds);
-            me.publish('recorder/record/volume', volume);
-          },
-          cancel: reject
-        });
+      return me.publish('recorder/stop').then(function () {
+        return (me.recording = when.promise(function (resolve, reject) {
+          Recorder.record({
+            start: resolve,
+            progress: function (milliseconds, volume) {
+              me.publish('recorder/record/progress', milliseconds);
+              me.publish('recorder/record/volume', volume);
+            },
+            cancel: reject
+          });
+        }));
       });
     },
 
     'hub/recorder/stop': function () {
-      Recorder.stop();
-      Recorder.encode(Recorder.AUDIO_FORMAT_MP3);
-      this.publish('recorder/stop/stopped');
-    },
-
-    'hub/recorder/replay-stop': function () {
-      Recorder.stop();
-      this.publish('recorder/stop/stopped');
-    },
-
-    'hub/record/play': function () {
       var me = this;
-      Recorder.stop();
-      Recorder.play({
-        progress: function (milliseconds) {
-          me.publish('recorder/play/progress', milliseconds);
-        }
+      // If there's really a recording or playing in progress.
+      if (me.recording || me.playing) {
+        Recorder.stop();
+        Recorder.encode(Recorder.AUDIO_FORMAT_MP3);
+        delete me.recording;
+      }
+    },
+
+    'hub/player/play': function () {
+      var me = this;
+      return me.publish('recorder/stop').then(function () {
+        (me.playing = when.promise(function (resolve) {
+          Recorder.play({
+            progress: function onProgress(milliseconds) {
+              me.publish('player/progress', milliseconds);
+            },
+            finished: function onFinished() {
+              me.publish('player/complete').then(function () {
+                resolve();
+                delete me.playing;
+              });
+            }
+          });
+        }));
       });
     },
 
@@ -85,4 +95,6 @@ define([
       });
     }
   });
+  service.start();
+  return service;
 });

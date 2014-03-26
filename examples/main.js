@@ -3,7 +3,7 @@
 'use strict';
 
 require.config({
-  baseUrl: '.',
+  baseUrl: '../',
   paths:{
     jquery: 'bower_components/jquery/dist/jquery',
     lodash: 'bower_components/lodash/dist/lodash.compat'
@@ -57,6 +57,11 @@ require.config({
       "main": "recorder.js"
     },
     {
+      "name": "tinycolor",
+      "location": "bower_components/tinycolor",
+      "main": "tinycolor.js"
+    },
+    {
       "name": "troopjs-recorder",
       location: '.'
     }
@@ -78,29 +83,21 @@ require.config({
       unweave: 'data-unweave-2'
     },
 
-    'troopjs-recorder/widget/main': {
-      // Custom base CSS class name for the recorder widget.
-      'cls': ''
-    },
     // Configure recording audio upload server.
-    'troopjs-recorder/widget/service': {
+    'troopjs-recorder/service/recorder': {
       upload:{
         method: 'POST',
         url: 'http://10.43.224.10:8085/media/upload'
-      },
-      download:{
-        url: 'http://10.43.224.10:8085/media?id='
       }
     }
   },
   callback: function loadDeps() {
     require([
       'jquery',
-      'troopjs-browser/application/widget',
-      'troopjs-recorder/widget/service'
-    ], function Bootstrap(jQuery, Application, RecordingService) {
+      'troopjs-browser/application/widget'
+    ], function Bootstrap(jQuery, Application) {
       jQuery(function ready($) {
-        Application($('html'), 'bootstrap', RecordingService()).start();
+        Application($('html'), 'bootstrap').start();
       });
     });
   }
