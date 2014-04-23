@@ -17,7 +17,7 @@ define([
   var service = Service.create({
     'sig/start': function () {
       // Load the SWF for initializing recorder which sits by side of the module main js.
-      var swfFilePath = recorderRequire.toUrl("recorder.swf").replace(/^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i, window.location.origin + '/');
+      var swfFilePath = recorderRequire.toUrl("recorder.swf").replace(/^https?\:\/\/([^\/]+)/i, window.location.origin);
       Recorder.initialize({
         swfSrc: swfFilePath
       });
