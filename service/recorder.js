@@ -17,7 +17,7 @@ define([
   var service = Service.create({
     'sig/start': function () {
       // Load the SWF for initializing recorder which sits by side of the module main js.
-      var swfFilePath = recorderRequire.toUrl("recorder.swf");
+      var swfFilePath = recorderRequire.toUrl("recorder.swf").replace(/^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i, window.location.origin + '/');
       Recorder.initialize({
         swfSrc: swfFilePath
       });
@@ -78,7 +78,7 @@ define([
         var cfg = _.extend({}, uploadCfg, options, {
           success: function (responseText) {
             var retval = JSON.parse(responseText);
-            
+
             if (downloadCfg) {
               retval.id ? resolve(downloadCfg.url + retval.id) : reject(retval);
             }
