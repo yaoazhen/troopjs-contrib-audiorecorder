@@ -111,6 +111,7 @@ define([
         // Display the error message with disabled state for 2s and recover.
         this.toggleState([CLS_DISABLED, CLS_ERROR].join(' '));
       }
+      alert("upload succeed, with response body:\n" + JSON.stringify(data));
       this.state(STATES.START);
     },
 

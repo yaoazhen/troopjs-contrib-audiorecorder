@@ -87,7 +87,12 @@ require.config({
     'troopjs-recorder/service/recorder': {
       upload:{
         method: 'POST',
-        url: 'http://10.43.224.10:8085/media/upload'
+        audioParam: "file",
+        audioFormat: 1,
+        url: 'http://up.qiniu.com',
+        params: {
+          "token": "WaUUPsnoEg6QXbzdO8sgIEgerhKUAaztnH_C-1Pk:VLPpjFyIVvjQd-PmNbLerpPe7_o=:eyJzY29wZSI6InRyb29wanMiLCJkZWFkbGluZSI6MTM5ODQ1MTQ3Nn0=",
+        }
       }
     }
   },
