@@ -9,7 +9,7 @@
     "troopjs-core": "~2.1.0",
     "troopjs-browser": "~2.1.0",
     "troopjs-requirejs": "~2.1.0",
-    "recorder.js": "http://github.com/garryyao/recorder.js.git#dist",
+    "recorder.js": "http://github.com/garryyao/recorder.js.git#~0",
     "when": "~2",
     "lodash": "~2",
     "jquery": "~1",
@@ -23,6 +23,7 @@
   "resolutions": {
     "troopjs-utils": "~2",
     "troopjs-core": "~2.1.0",
-    "jquery": "~1"
+    "jquery": "~1",
+    "when": "~3"
   }
 }
