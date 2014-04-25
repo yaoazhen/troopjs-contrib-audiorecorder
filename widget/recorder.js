@@ -31,7 +31,7 @@ define([
     },
 
     stop: function () {
-      this.publish('recorder/stop');
+      return this.publish('recorder/stop');
     },
 
     /**
