@@ -33,7 +33,7 @@ define([
       return p;
     },
 
-    stop: function () {
+    stopRecord: function () {
       return this.publish('recorder/stop');
     },
 
