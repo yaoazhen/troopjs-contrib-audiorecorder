@@ -26,22 +26,25 @@ define([
     'hub/recorder/record': function () {
       var me = this;
       return me.publish('recorder/stop').then(function () {
-        return (me.recording = when.promise(function (resolve, reject) {
+        return when.promise(function (resolve, reject) {
           Recorder.record({
-            start: resolve,
+            start: function () {
+              me.recording = 1;
+              resolve();
+            },
             progress: function (milliseconds, volume) {
               me.publish('recorder/record/progress', milliseconds);
               me.publish('recorder/record/volume', volume);
             },
             cancel: reject
           });
-        }));
+        });
       });
     },
 
     'hub/recorder/stop': function () {
       var me = this;
-      // If there's really a recording or playing in progress.
+      // check there's an actual recording or playing in progress.
       if (me.recording || me.playing) {
         Recorder.stop();
         Recorder.encode(Recorder.AUDIO_FORMAT_MP3);

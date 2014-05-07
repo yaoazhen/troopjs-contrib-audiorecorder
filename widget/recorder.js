@@ -23,11 +23,14 @@ define([
 
     record: function () {
       var me = this;
-      return me.publish('recorder/record').then(function () {
+      var p = me.publish('recorder/record');
+      p.then(function () {
         me.state(STATES.RECORDING);
-      }).catch(function () {
+      });
+      p.otherwise(function () {
         me.state(STATES.START);
       });
+      return p;
     },
 
     stop: function () {
@@ -80,12 +83,15 @@ define([
     upload: function () {
       var me = this;
       var options = me[CONFIGURATION].upload;
-      me.publish('recorder/upload', options).then(function (data) {
+      var p = me.publish('recorder/upload', options);
+      p.then(function (data) {
         me.signal('upload', null, data);
-      }).otherwise(function (err) {
+      });
+      p.otherwise(function (err) {
         me.signal('upload', err);
       });
       me.state(STATES.UPLOADING);
+      return p;
     },
 
     state: function (state) {
