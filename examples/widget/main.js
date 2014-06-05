@@ -76,6 +76,7 @@ define([
             toggleAction('play');
           break;
         case STATES.UPLOADING:
+        case STATES.DISABLE:
           // button disabled when uploading.
           toggleAction();
           break;

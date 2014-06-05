@@ -13,13 +13,19 @@ define([
   var uploadCfg = moduleCfg.upload;
   var downloadCfg = moduleCfg.download;
 
-
   var service = Service.create({
-    'sig/start': function () {
+    'sig/initialize': function () {
       // Load the SWF for initializing recorder which sits by side of the module main js.
       var swfFilePath = recorderRequire.toUrl("recorder.swf");
+      var df = when.defer();
       Recorder.initialize({
-        swfSrc: swfFilePath
+        swfSrc: swfFilePath,
+        initialized: df.resolve
+      });
+      var me = this;
+      return df.promise.tap(function () {
+        // TODO: Hack for 2.x to notify when this service has initialized.
+        me.emit("sig/initialized");
       });
     },
 

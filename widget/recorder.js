@@ -7,10 +7,11 @@ define([
   'when',
   './states',
   '../service/recorder'
-], function (Widget, when, STATES) {
+], function (Widget, when, STATES, Service) {
   'use strict';
 
   var CONFIGURATION = 'configuration';
+  var PHASE = 'phase';
 
   // Handles the widget instantiation.
   return Widget.extend(function ($element, name, options) {
@@ -18,7 +19,15 @@ define([
   }, {
     'sig/start': function () {
       this.cls = this.$element.attr('class');
-      this.state(STATES.START);
+      var me = this;
+      if(Service[PHASE] !== 'started'){
+        Service.on('sig/initialized', function() {
+          me.state(STATES.START);
+        });
+        me.state(STATES.DISABLE);
+        return;
+      }
+      me.state(STATES.START);
     },
 
     record: function () {
