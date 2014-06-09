@@ -21,7 +21,7 @@ define([
       this.cls = this.$element.attr('class');
       var me = this;
       if(Service[PHASE] !== 'started'){
-        Service.on('sig/initialized', function() {
+        Service.on('sig/started', function() {
           me.state(STATES.START);
         });
         me.state(STATES.DISABLE);

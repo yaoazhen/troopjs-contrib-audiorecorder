@@ -22,11 +22,12 @@ define([
         swfSrc: swfFilePath,
         initialized: df.resolve
       });
-      var me = this;
-      return df.promise.tap(function () {
-        // TODO: Hack for 2.x to notify when this service has initialized.
-        me.emit("sig/initialized");
-      });
+      return df.promise;
+    },
+
+    'sig/start': function () {
+      // TODO: Hack for 2.x to notify when this service has initialized.
+      this.emit("sig/started");
     },
 
     'hub/recorder/record': function () {
