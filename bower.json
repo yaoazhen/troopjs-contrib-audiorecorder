@@ -1,29 +1,28 @@
 {
-  "name": "troopjs-recorder",
+  "name": "troopjs-contrib-audiorecorder",
   "version": "0.0.9",
   "ignore": [
     "**/.*",
     "node_modules"
   ],
   "dependencies": {
-    "troopjs-core": "~2.1.0",
-    "troopjs-browser": "~2.1.0",
-    "troopjs-requirejs": "~2.1.0",
-    "recorder.js": "http://github.com/garryyao/recorder.js.git#~0",
-    "when": "~2",
-    "lodash": "~2",
-    "jquery": "~1",
+    "troopjs-dom": "",
+    "troopjs-requirejs": "",
+    "recorder.js": "garryyao/recorder.js#~0",
+    "when": "",
+    "lodash": "",
+    "jquery": "",
     "mu-template": "~1",
     "requirejs-text": "~2",
     "tinycolor": "~0"
   },
   "devDependencies": {
-    "less": "~1.6.1"
+    "less": ""
   },
   "resolutions": {
-    "troopjs-utils": "~2",
-    "troopjs-core": "~2.1.0",
-    "jquery": "~1",
-    "when": "~3"
+    "when": "3.2.3",
+    "troopjs-jquery": "~3",
+    "troopjs-compose": "~4",
+    "troopjs-core": "~3"
   }
 }
