@@ -14,6 +14,7 @@
     "troopjs-requirejs": "",
     "mu-template": "",
     "tinycolor": "~0",
-    "lodash": ""
+    "lodash": "",
+    "c3": "^0"
   }
 }
