@@ -5,9 +5,8 @@
 define([
   'troopjs-recorder/widget/recorder',
   'troopjs-recorder/widget/states',
-  'tinycolor',
-  'template!./main.html'
-], function (Recorder, STATES, color, tHtml) {
+  'tinycolor'
+], function (Recorder, STATES, color) {
   'use strict';
 
   var SEL_BTN = '.btn.primary';
@@ -26,14 +25,13 @@ define([
     // Handles the widget starting.
     'sig/start': function initialize() {
       var me = this;
-      me.html(tHtml);
       var $el = me[$ELEMENT];
       me.$btn = $el.find(SEL_BTN);
       me.$timer = $el.find(SEL_TIMER);
       me.$indicator = $el.find(SEL_INDICATOR);
     },
 
-    'dom:.btn.primary/click': function () {
+    'dom/click(.btn.primary)': function () {
       var me = this;
       var action = me[me.$btn.attr('data-action')];
       if (action) {
@@ -61,10 +59,10 @@ define([
           toggleAction('record');
           break;
         case STATES.RECORDING:
-          toggleAction('stop');
+          toggleAction('stopRecord');
           break;
         case STATES.PLAYING:
-          toggleAction('stop');
+          toggleAction('stopRecord');
           break;
         case STATES.STOPPED:
           // play just once then to upload.

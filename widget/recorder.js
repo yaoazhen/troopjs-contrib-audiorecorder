@@ -3,7 +3,7 @@
  *
  */
 define([
-  'troopjs-browser/component/widget',
+  'troopjs-dom/component/widget',
   'when',
   './states',
   '../service/recorder'
@@ -61,10 +61,11 @@ define([
      * Handle recorder notify recording volume in progress.
      * @handler
      */
-    'hub/recorder/record/volume': function (volume) {
+    'hub/recorder/record/progress': function (ellapsed, volume) {
       var me = this;
       var state = me.state();
       if (state === STATES.RECORDING) {
+        me.signal('progress', ellapsed);
         me.signal('volume', volume);
       }
     },
