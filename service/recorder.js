@@ -37,11 +37,11 @@ define([
           Recorder.record({
             start: function () {
               me.recording = 1;
+              me.publish('recorder/record/started');
               resolve();
             },
             progress: function (milliseconds, volume) {
-              me.publish('recorder/record/progress', milliseconds);
-              me.publish('recorder/record/volume', volume);
+              me.publish('recorder/record/progress', milliseconds, volume);
             },
             cancel: reject
           });
@@ -56,6 +56,7 @@ define([
         Recorder.stop();
         Recorder.encode(Recorder.AUDIO_FORMAT_MP3);
         delete me.recording;
+        me.publish('recorder/record/stopped');
       }
     },
 
