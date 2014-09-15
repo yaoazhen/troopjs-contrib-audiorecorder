@@ -11,7 +11,6 @@
 define(function(require) {
 
 	var when = require('./when');
-	var Promise = when.Promise;
 	var toPromise = when.resolve;
 
 	return {
@@ -27,38 +26,35 @@ define(function(require) {
 	 * @returns {Promise} promise for an object with the fully resolved key-value pairs
 	 */
 	function all(object) {
-		var p = Promise._defer();
-		var resolver = Promise._handler(p);
+		return when.promise(function(resolve, reject, notify) {
+			var results = {};
+			var pending = 0;
 
-		var results = {};
-		var keys = Object.keys(object);
-		var pending = keys.length;
-
-		for(var i=0, k; i<keys.length; ++i) {
-			k = keys[i];
-			Promise._handler(object[k]).fold(settleKey, k, results, resolver);
-		}
-
-		if(pending === 0) {
-			resolver.resolve(results);
-		}
-
-		return p;
-
-		function settleKey(k, x, resolver) {
-			/*jshint validthis:true*/
-			this[k] = x;
-			if(--pending === 0) {
-				resolver.resolve(results);
+			for(var k in object) {
+				++pending;
+				resolveOne(object[k], k);
 			}
-		}
+
+			if(pending === 0) {
+				resolve(results);
+			}
+
+			function resolveOne(x, k) {
+				toPromise(x).then(function(x) {
+					results[k] = x;
+					if(--pending === 0) {
+						resolve(results);
+					}
+				}, reject, notify);
+			}
+		});
 	}
 
 	/**
 	 * Map values in the supplied object's keys
 	 * @param {Promise|object} object or promise for object whose key-value pairs
 	 *  will be reduced
-	 * @param {function(value:*, key:String):*} f mapping function which may
+	 * @param {function} f mapping function mapFunc(value) which may
 	 *  return either a promise or a value
 	 * @returns {Promise} promise for an object with the mapped and fully
 	 *  resolved key-value pairs
@@ -66,14 +62,10 @@ define(function(require) {
 	function map(object, f) {
 		return toPromise(object).then(function(object) {
 			return all(Object.keys(object).reduce(function(o, k) {
-				o[k] = toPromise(object[k]).fold(mapWithKey, k);
+				o[k] = toPromise(object[k]).then(f);
 				return o;
 			}, {}));
 		});
-
-		function mapWithKey(k, x) {
-			return f(x, k);
-		}
 	}
 
 });

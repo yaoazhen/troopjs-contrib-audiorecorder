@@ -6,26 +6,24 @@
 define(function(require) {
 
 	var defaultStackJumpSeparator = 'from execution context:';
-	var defaultStackFilter = /[\s\(\/\\](node|module|timers)\.js:|when([\/\\]{1,2}(lib|monitor|es6-shim)[\/\\]{1,2}|\.js)|(new\sPromise)\b|(\b(PromiseMonitor|ConsoleReporter|Scheduler|RunHandlerTask|ProgressTask|Promise|.*Handler)\.[\w_]\w\w+\b)|\b(tryCatch\w+|getHandler\w*)\b/i;
+	var defaultStackFilter = /(node|module|timers)\.js:|when([\/\\]{1,2}(lib|monitor|es6-shim)[\/\\]{1,2}|\.js)|(new\sPromise)\b|(\b(PromiseMonitor|ConsoleReporter|Scheduler|RunHandlerTask|ProgressTask|Promise|.*Handler)\.[\w_]\w\w+\b)|\b(tryCatch\w+|getHandler\w*)\b/i;
 
 	var setTimer = require('../lib/timer').set;
 	var error = require('./error');
 
-	var executionContext = [];
-
 	function PromiseMonitor(reporter) {
-		this.logDelay = 0;
+		this._traces = {};
+		this.traceTask = 0;
+		this.logDelay = 100;
 		this.stackFilter = defaultStackFilter;
 		this.stackJumpSeparator = defaultStackJumpSeparator;
 		this.filterDuplicateFrames = true;
 
 		this._reporter = reporter;
+
 		if(typeof reporter.configurePromiseMonitor === 'function') {
 			reporter.configurePromiseMonitor(this);
 		}
-
-		this._traces = [];
-		this._traceTask = 0;
 
 		var self = this;
 		this._doLogTraces = function() {
@@ -33,99 +31,62 @@ define(function(require) {
 		};
 	}
 
-	PromiseMonitor.prototype.monitor = function(Promise) {
-		var self = this;
-		Promise.createContext = function(p, context) {
-			p.context = self.createContext(p, context);
-		};
-
-		Promise.enterContext = function(p) {
-			executionContext.push(p.context);
-		};
-
-		Promise.exitContext = function() {
-			executionContext.pop();
-		};
-
-		Promise.onPotentiallyUnhandledRejection = function(rejection, extraContext) {
-			return self.addTrace(rejection, extraContext);
-		};
-
-		Promise.onPotentiallyUnhandledRejectionHandled = function(rejection) {
-			return self.removeTrace(rejection);
-		};
-
-		Promise.onFatalRejection = function(rejection, extraContext) {
-			return self.fatal(rejection, extraContext);
-		};
-
-		return this;
-	};
-
-	PromiseMonitor.prototype.createContext = function(at, parentContext) {
-		var context = {
-			parent: parentContext || executionContext[executionContext.length - 1],
-			stack: void 0
-		};
-		error.captureStack(context, at.constructor);
-		return context;
+	PromiseMonitor.prototype.captureStack = function(host, at) {
+		return error.captureStack(host, at);
 	};
 
 	PromiseMonitor.prototype.addTrace = function(handler, extraContext) {
-		var t, i;
-
-		for(i = this._traces.length-1; i >= 0; --i) {
-			t = this._traces[i];
-			if(t.handler === handler) {
-				break;
-			}
-		}
-
-		if(i >= 0) {
-			t.extraContext = extraContext;
-		} else {
-			this._traces.push({
-				handler: handler,
-				extraContext: extraContext
-			});
-		}
-
+		this._traces[handler.id] = {
+			error: handler.value,
+			context: handler.context,
+			extraContext: extraContext
+		};
 		this.logTraces();
 	};
 
-	PromiseMonitor.prototype.removeTrace = function(/*handler*/) {
-		this.logTraces();
+	PromiseMonitor.prototype.removeTrace = function(handler) {
+		if(handler.id in this._traces) {
+			delete this._traces[handler.id];
+			this.logTraces();
+		}
 	};
 
-	PromiseMonitor.prototype.fatal = function(handler, extraContext) {
+	PromiseMonitor.prototype.fatal = function(handler) {
 		var err = new Error();
-		err.stack = this._createLongTrace(handler.value, handler.context, extraContext).join('\n');
+		err.stack = this._createLongTrace(handler.value, handler.context).join('\n');
 		setTimer(function() {
 			throw err;
 		}, 0);
 	};
 
 	PromiseMonitor.prototype.logTraces = function() {
-		if(!this._traceTask) {
-			this._traceTask = setTimer(this._doLogTraces, this.logDelay);
+		if(!this.traceTask) {
+			this.traceTask = setTimer(this._doLogTraces, this.logDelay);
 		}
 	};
 
 	PromiseMonitor.prototype._logTraces = function() {
-		this._traceTask = void 0;
-		this._traces = this._traces.filter(filterHandled);
+		this.traceTask = void 0;
 		this._reporter.log(this.formatTraces(this._traces));
 	};
 
 
 	PromiseMonitor.prototype.formatTraces = function(traces) {
-		return traces.map(function(t) {
-			return this._createLongTrace(t.handler.value, t.handler.context, t.extraContext);
-		}, this);
+		var keys = Object.keys(traces);
+		var formatted = [];
+		var longTrace, t, i;
+
+		for(i=0; i<keys.length; ++i) {
+			t = traces[keys[i]];
+			longTrace = this._createLongTrace(t.error, t.context, t.extraContext);
+			formatted.push(longTrace);
+		}
+
+		return formatted;
 	};
 
 	PromiseMonitor.prototype._createLongTrace = function(e, context, extraContext) {
-		var trace = error.parse(e) || [String(e) + ' (WARNING: non-Error used)'];
+		var trace = error.parse(e) || [];
 		trace = filterFrames(this.stackFilter, trace, 0);
 		this._appendContext(trace, context);
 		this._appendContext(trace, extraContext);
@@ -186,10 +147,6 @@ define(function(require) {
 		return stack.filter(function(frame) {
 			return !stackFilter.test(frame);
 		});
-	}
-
-	function filterHandled(t) {
-		return !t.handler.handled;
 	}
 
 	return PromiseMonitor;

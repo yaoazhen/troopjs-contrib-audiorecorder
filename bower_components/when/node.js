@@ -11,11 +11,13 @@
 (function(define) {
 define(function(require) {
 
-	var when = require('./when');
-	var Promise = when.Promise;
-	var _liftAll = require('./lib/liftAll');
-	var setTimer = require('./lib/timer').set;
-	var slice = Array.prototype.slice;
+	var when, Promise, slice, setTimer, _liftAll;
+
+	when = require('./when');
+	Promise = when.Promise;
+	_liftAll = require('./lib/liftAll');
+	setTimer = require('./lib/timer').set;
+	slice = Array.prototype.slice;
 
 	return {
 		lift: lift,
@@ -53,48 +55,33 @@ define(function(require) {
 	 *    // Logs 'Calculation failed'
 	 *    nodefn.apply(onlySmallNumbers, [15]).then(console.log, console.error);
 	 *
-	 * @param {function} f node-style function that will be called
+	 * @param {function} func node-style function that will be called
 	 * @param {Array} [args] array of arguments to func
 	 * @returns {Promise} promise for the value func passes to its callback
 	 */
-	function apply(f, args) {
-		return run(f, this, args || []);
+	function apply(func, args) {
+		return _apply(func, this, args || []);
 	}
 
 	/**
 	 * Apply helper that allows specifying thisArg
 	 * @private
 	 */
-	function run(f, thisArg, args) {
+	function _apply(func, thisArg, args) {
+		return Promise.all(args).then(function(args) {
+			return _applyDirect(func, thisArg, args);
+		});
+	}
+
+	/**
+	 * Apply helper that optimizes for small number of arguments
+	 * @private
+	 */
+	function _applyDirect(func, thisArg, args) {
 		var p = Promise._defer();
-		switch(args.length) {
-			case 2:  apply2(p._handler, f, thisArg, args); break;
-			case 1:  apply1(p._handler, f, thisArg, args); break;
-			default: applyN(p._handler, f, thisArg, args);
-		}
-
+		args.push(createCallback(p._handler));
+		func.apply(thisArg, args);
 		return p;
-	}
-
-	function applyN(resolver, f, thisArg, args) {
-		Promise.all(args)._handler.fold(function(f, args, resolver) {
-			args.push(createCallback(resolver));
-			f.apply(this, args);
-		}, f, thisArg, resolver);
-	}
-
-	function apply2(resolver, f, thisArg, args) {
-		Promise._handler(args[0]).fold(function(x, y, resolver) {
-			Promise._handler(x).fold(function(x, y, resolver) {
-				f.call(this, x, y, createCallback(resolver));
-			}, y, this, resolver);
-		}, args[1], thisArg, resolver);
-	}
-
-	function apply1(resolver, f, thisArg, args) {
-		Promise._handler(args[0]).fold(function(f, x, resolver) {
-			f.call(this, x, createCallback(resolver));
-		}, f, thisArg, resolver);
 	}
 
 	/**
@@ -118,12 +105,12 @@ define(function(require) {
 	 *    // Logs 'Calculation failed'
 	 *    nodefn.call(sumSmallNumbers, 5, 10).then(console.log, console.error);
 	 *
-	 * @param {function} f node-style function that will be called
+	 * @param {function} func node-style function that will be called
 	 * @param {...*} [args] arguments that will be forwarded to the function
 	 * @returns {Promise} promise for the value func passes to its callback
 	 */
-	function call(f /*, args... */) {
-		return run(f, this, slice.call(arguments, 1));
+	function call(func /*, args... */) {
+		return _apply(func, this, slice.call(arguments, 1));
 	}
 
 	/**
@@ -152,25 +139,14 @@ define(function(require) {
 	 *    promiseRead('doesnt_exist.txt').then(console.log, console.error);
 	 *
 	 *
-	 * @param {Function} f node-style function to be lifted
-	 * @param {...*} [args] arguments to be prepended for the new function @deprecated
+	 * @param {Function} func node-style function to be bound
+	 * @param {...*} [args] arguments to be prepended for the new function
 	 * @returns {Function} a promise-returning function
 	 */
-	function lift(f /*, args... */) {
-		var args1 = arguments.length > 1 ? slice.call(arguments, 1) : [];
+	function lift(func /*, args... */) {
+		var args = slice.call(arguments, 1);
 		return function() {
-			// TODO: Simplify once partialing has been removed
-			var l = args1.length;
-			var al = arguments.length;
-			var args = new Array(al + l);
-			var i;
-			for(i=0; i<l; ++i) {
-				args[i] = args1[i];
-			}
-			for(i=0; i<al; ++i) {
-				args[i+l] = arguments[i];
-			}
-			return run(f, this, args);
+			return _apply(func, this, args.concat(slice.call(arguments)));
 		};
 	}
 

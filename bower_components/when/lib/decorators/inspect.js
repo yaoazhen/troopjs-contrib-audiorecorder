@@ -5,25 +5,11 @@
 (function(define) { 'use strict';
 define(function() {
 
-	return function inspection(Promise) {
+	return function inspect(Promise) {
 
 		Promise.prototype.inspect = function() {
-			return inspect(Promise._handler(this));
+			return this._handler.inspect();
 		};
-
-		function inspect(handler) {
-			var state = handler.state();
-
-			if(state === 0) {
-				return { state: 'pending' };
-			}
-
-			if(state > 0) {
-				return { state: 'fulfilled', value: handler.value };
-			}
-
-			return { state: 'rejected', reason: handler.value };
-		}
 
 		return Promise;
 	};

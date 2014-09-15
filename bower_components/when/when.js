@@ -5,7 +5,7 @@
  * when is part of the cujoJS family of libraries (http://cujojs.com/)
  * @author Brian Cavalier
  * @author John Hann
- * @version 3.4.5
+ * @version 3.1.0
  */
 (function(define) { 'use strict';
 define(function (require) {
@@ -13,20 +13,17 @@ define(function (require) {
 	var timed = require('./lib/decorators/timed');
 	var array = require('./lib/decorators/array');
 	var flow = require('./lib/decorators/flow');
-	var fold = require('./lib/decorators/fold');
 	var inspect = require('./lib/decorators/inspect');
 	var generate = require('./lib/decorators/iterate');
 	var progress = require('./lib/decorators/progress');
 	var withThis = require('./lib/decorators/with');
-	var unhandledRejection = require('./lib/decorators/unhandledRejection');
-	var TimeoutError = require('./lib/TimeoutError');
 
-	var Promise = [array, flow, fold, generate, progress,
-		inspect, withThis, timed, unhandledRejection]
-		.reduce(function(Promise, feature) {
+	var Promise = [array, flow, generate, progress, inspect, withThis, timed]
+		.reduceRight(function(Promise, feature) {
 			return feature(Promise);
 		}, require('./lib/Promise'));
 
+	var resolve = Promise.resolve;
 	var slice = Array.prototype.slice;
 
 	// Public API
@@ -36,8 +33,8 @@ define(function (require) {
 	when.reject      = Promise.reject;       // Create a rejected promise
 
 	when.lift        = lift;                 // lift a function to return promises
-	when['try']      = attempt;              // call a function and return a promise
-	when.attempt     = attempt;              // alias for when.try
+	when['try']      = tryCall;              // call a function and return a promise
+	when.attempt     = tryCall;              // alias for when.try
 
 	when.iterate     = Promise.iterate;      // Generate a stream of promises
 	when.unfold      = Promise.unfold;       // Generate a stream of promises
@@ -49,10 +46,8 @@ define(function (require) {
 
 	when.any         = lift(Promise.any);    // One-winner race
 	when.some        = lift(Promise.some);   // Multi-winner race
-	when.race        = lift(Promise.race);   // First-to-settle race
 
 	when.map         = map;                  // Array.map() for promises
-	when.filter      = filter;               // Array.filter() for promises
 	when.reduce      = reduce;               // Array.reduce() for promises
 	when.reduceRight = reduceRight;          // Array.reduceRight() for promises
 
@@ -61,12 +56,8 @@ define(function (require) {
 	when.Promise     = Promise;              // Promise constructor
 	when.defer       = defer;                // Create a {promise, resolve, reject} tuple
 
-	// Error types
-
-	when.TimeoutError = TimeoutError;
-
 	/**
-	 * Get a trusted promise for x, or by transforming x with onFulfilled
+	 * When x, which may be a promise, thenable, or non-promise value,
 	 *
 	 * @param {*} x
 	 * @param {function?} onFulfilled callback to be called when x is
@@ -75,20 +66,14 @@ define(function (require) {
 	 * @param {function?} onRejected callback to be called when x is
 	 *   rejected.
 	 * @param {function?} onProgress callback to be called when progress updates
-	 *   are issued for x. @deprecated
+	 *   are issued for x.
 	 * @returns {Promise} a new promise that will fulfill with the return
 	 *   value of callback or errback or the completion value of promiseOrValue if
 	 *   callback and/or errback is not supplied.
 	 */
-	function when(x, onFulfilled, onRejected) {
-		var p = Promise.resolve(x);
-		if(arguments.length < 2) {
-			return p;
-		}
-
-		return arguments.length > 3
-			? p.then(onFulfilled, onRejected, arguments[3])
-			: p.then(onFulfilled, onRejected);
+	function when(x, onFulfilled, onRejected, onProgress) {
+		var p = resolve(x);
+		return arguments.length < 2 ? p : p.then(onFulfilled, onRejected, onProgress);
 	}
 
 	/**
@@ -118,7 +103,7 @@ define(function (require) {
 	 * @param {function} f
 	 * @returns {Promise}
 	 */
-	function attempt(f /*, args... */) {
+	function tryCall(f /*, args... */) {
 		/*jshint validthis:true */
 		return _apply(f, this, slice.call(arguments, 1));
 	}
@@ -127,9 +112,9 @@ define(function (require) {
 	 * try/lift helper that allows specifying thisArg
 	 * @private
 	 */
-	function _apply(f, thisArg, args) {
+	function _apply(func, thisArg, args) {
 		return Promise.all(args).then(function(args) {
-			return f.apply(thisArg, args);
+			return func.apply(thisArg, args);
 		});
 	}
 
@@ -194,7 +179,7 @@ define(function (require) {
 	 * the outcome states of all input promises.  The returned promise
 	 * will only reject if `promises` itself is a rejected promise.
 	 * @param {array|Promise} promises array (or promise for an array) of promises
-	 * @returns {Promise} promise for array of settled state descriptors
+	 * @returns {Promise}
 	 */
 	function settle(promises) {
 		return when(promises, Promise.settle);
@@ -204,8 +189,7 @@ define(function (require) {
 	 * Promise-aware array map function, similar to `Array.prototype.map()`,
 	 * but input array may contain promises or values.
 	 * @param {Array|Promise} promises array of anything, may contain promises and values
-	 * @param {function(x:*, index:Number):*} mapFunc map function which may
-	 *  return a promise or value
+	 * @param {function} mapFunc map function which may return a promise or value
 	 * @returns {Promise} promise that will fulfill with an array of mapped values
 	 *  or reject if any input promise rejects.
 	 */
@@ -216,28 +200,14 @@ define(function (require) {
 	}
 
 	/**
-	 * Filter the provided array of promises using the provided predicate.  Input may
-	 * contain promises and values
-	 * @param {Array|Promise} promises array of promises and values
-	 * @param {function(x:*, index:Number):boolean} predicate filtering predicate.
-	 *  Must return truthy (or promise for truthy) for items to retain.
-	 * @returns {Promise} promise that will fulfill with an array containing all items
-	 *  for which predicate returned truthy.
-	 */
-	function filter(promises, predicate) {
-		return when(promises, function(promises) {
-			return Promise.filter(promises, predicate);
-		});
-	}
-
-	/**
 	 * Traditional reduce function, similar to `Array.prototype.reduce()`, but
 	 * input may contain promises and/or values, and reduceFunc
 	 * may return either a value or a promise, *and* initialValue may
 	 * be a promise for the starting value.
+	 *
 	 * @param {Array|Promise} promises array or promise for an array of anything,
 	 *      may contain a mix of promises and values.
-	 * @param {function(accumulated:*, x:*, index:Number):*} f reduce function
+	 * @param {function} f reduce function reduce(currentValue, nextValue, index)
 	 * @returns {Promise} that will resolve to the final reduced value
 	 */
 	function reduce(promises, f /*, initialValue */) {
@@ -254,9 +224,10 @@ define(function (require) {
 	 * input may contain promises and/or values, and reduceFunc
 	 * may return either a value or a promise, *and* initialValue may
 	 * be a promise for the starting value.
+	 *
 	 * @param {Array|Promise} promises array or promise for an array of anything,
 	 *      may contain a mix of promises and values.
-	 * @param {function(accumulated:*, x:*, index:Number):*} f reduce function
+	 * @param {function} f reduce function reduce(currentValue, nextValue, index)
 	 * @returns {Promise} that will resolve to the final reduced value
 	 */
 	function reduceRight(promises, f /*, initialValue */) {

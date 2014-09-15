@@ -11,9 +11,11 @@
 (function (define) { 'use strict';
 define(function(require) {
 
-	var when = require('./when');
-	var attempt = when['try'];
-	var cancelable = require('./cancelable');
+	var when, attempt, cancelable;
+
+	when = require('./when');
+	attempt = when['try'];
+	cancelable = require('./cancelable');
 
 	/**
 	 * Periodically execute the work function on the msec delay. The result of

@@ -5,10 +5,16 @@
 (function(define) { 'use strict';
 define(function(require) {
 
-	var monitor = require('../monitor');
-	var Promise = require('../when').Promise;
+	var PromiseMonitor = require('./PromiseMonitor');
+	var ConsoleReporter = require('./ConsoleReporter');
 
-	return monitor(Promise);
+	var promiseMonitor = new PromiseMonitor(new ConsoleReporter());
+
+	if(typeof console !== 'undefined') {
+		console.promiseMonitor = promiseMonitor;
+	}
+
+	return promiseMonitor;
 
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));

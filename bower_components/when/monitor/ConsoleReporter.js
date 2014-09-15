@@ -19,7 +19,7 @@ define(function(require) {
 		if(traces.length === 0) {
 			if(this._previouslyReported) {
 				this._previouslyReported = false;
-				this.msg(allHandledMsg);
+				this.warn(allHandledMsg);
 			}
 			return;
 		}
@@ -40,20 +40,15 @@ define(function(require) {
 	};
 
 	function initDefaultLogging() {
-		/*jshint maxcomplexity:7*/
-		var log, warn, groupStart, groupEnd;
+		var warn, groupStart, groupEnd;
 
 		if(typeof console === 'undefined') {
-			log = warn = consoleNotAvailable;
+			warn = consoleNotAvailable;
 		} else {
 			if(typeof console.error === 'function'
 				&& typeof console.dir === 'function') {
 				warn = function(s) {
 					console.error(s);
-				};
-
-				log = function(s) {
-					console.log(s);
 				};
 
 				if(typeof console.groupCollapsed === 'function') {
@@ -70,20 +65,14 @@ define(function(require) {
 				// Credit to webpro (https://github.com/webpro) for this idea
 				if (typeof console.log ==='function'
 					&& typeof JSON !== 'undefined') {
-					log = warn = function (x) {
-						if(typeof x !== 'string') {
-							try {
-								x = JSON.stringify(x);
-							} catch(e) {}
-						}
-						console.log(x);
+					warn = function (x) {
+						console.log(typeof x === 'string' ? x : JSON.stringify(x));
 					};
 				}
 			}
 		}
 
 		return {
-			msg: log,
 			warn: warn,
 			groupStart: groupStart || warn,
 			groupEnd: groupEnd || consoleNotAvailable

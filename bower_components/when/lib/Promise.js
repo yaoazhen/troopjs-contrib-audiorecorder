@@ -6,11 +6,12 @@
 define(function (require) {
 
 	var makePromise = require('./makePromise');
-	var Scheduler = require('./Scheduler');
+	var Scheduler = require('./scheduler');
 	var async = require('./async');
 
 	return makePromise({
-		scheduler: new Scheduler(async)
+		scheduler: new Scheduler(async),
+		monitor: typeof console !== 'undefined' ? console : void 0
 	});
 
 });

@@ -11,10 +11,12 @@
 (function(define) {
 define(function(require) {
 
-	var when = require('./when');
-	var attempt = when['try'];
-	var _liftAll = require('./lib/liftAll');
-	var slice = Array.prototype.slice;
+	var when, slice, attempt, _liftAll;
+
+	when = require('./when');
+	attempt = when['try'];
+	_liftAll = require('./lib/liftAll');
+	slice = Array.prototype.slice;
 
 	return {
 		lift: lift,
@@ -45,11 +47,11 @@ define(function(require) {
 	 * The resulting function is promise-aware, in the sense that it accepts
 	 * promise arguments, and waits for their resolution.
 	 * @param {Function} f function to be bound
-	 * @param {...*} [args] arguments to be prepended for the new function @deprecated
+	 * @param {...*} [args] arguments to be prepended for the new function
 	 * @returns {Function} a promise-returning function
 	 */
 	function lift(f /*, args... */) {
-		var args = arguments.length > 1 ? slice.call(arguments, 1) : [];
+		var args = slice.call(arguments, 1);
 		return function() {
 			return _apply(f, this, args.concat(slice.call(arguments)));
 		};
@@ -97,9 +99,11 @@ define(function(require) {
 		var funcs = slice.call(arguments, 1);
 
 		return function() {
-			var thisArg = this;
-			var args = slice.call(arguments);
-			var firstPromise = attempt.apply(thisArg, [f].concat(args));
+			var thisArg, args, firstPromise;
+
+			thisArg = this;
+			args = slice.call(arguments);
+			firstPromise = attempt.apply(thisArg, [f].concat(args));
 
 			return when.reduce(funcs, function(arg, func) {
 				return func.call(thisArg, arg);

@@ -14,9 +14,7 @@ define(function(require) {
 		setTimer = function (f, ms) { return vertx.setTimer(ms, f); };
 		clearTimer = vertx.cancelTimer;
 	} catch (e) {
-		// NOTE: Truncate decimals to workaround node 0.10.30 bug:
-		// https://github.com/joyent/node/issues/8167
-		setTimer = function(f, ms) { return setTimeout(f, ms|0); };
+		setTimer = function(f, ms) { return setTimeout(f, ms); };
 		clearTimer = function(t) { return clearTimeout(t); };
 	}
 

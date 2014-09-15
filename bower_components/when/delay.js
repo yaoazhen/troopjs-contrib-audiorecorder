@@ -12,13 +12,13 @@
 (function(define) {
 define(function(require) {
 
-	var when = require('./when');
+	var resolve = require('./when').resolve;
 
     /**
 	 * @deprecated Use when(value).delay(ms)
      */
     return function delay(msec, value) {
-		return when(value).delay(msec);
+		return resolve(value).delay(msec);
     };
 
 });

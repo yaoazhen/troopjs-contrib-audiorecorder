@@ -11,10 +11,13 @@
 (function(define) {
 define(function(require) {
 
-	var when = require('./when');
-	var Promise = when.Promise;
-	var _liftAll = require('./lib/liftAll');
-	var slice = Array.prototype.slice;
+	var when, Promise, promise, slice, _liftAll;
+
+	when = require('./when');
+	Promise = when.Promise;
+	_liftAll = require('./lib/liftAll');
+	promise = when.promise;
+	slice = Array.prototype.slice;
 
 	return {
 		lift: lift,
@@ -127,11 +130,11 @@ define(function(require) {
 	 *    promiseAjaxGet("/movies.json").then(console.log, console.error);
 	 *
 	 * @param {Function} f traditional async function to be decorated
-	 * @param {...*} [args] arguments to be prepended for the new function @deprecated
+	 * @param {...*} [args] arguments to be prepended for the new function
 	 * @returns {Function} a promise-returning function
 	 */
 	function lift(f/*, args...*/) {
-		var args = arguments.length > 1 ? slice.call(arguments, 1) : [];
+		var args = slice.call(arguments, 1);
 		return function() {
 			return _apply(f, this, args.concat(slice.call(arguments)));
 		};
@@ -199,8 +202,6 @@ define(function(require) {
 	 * @param {number} [positions.errback] index at which asyncFunction expects to
 	 *  receive an error callback
 	 *  @returns {function} promisified function that accepts
-	 *
-	 * @deprecated
 	 */
 	function promisify(asyncFunction, positions) {
 
@@ -250,10 +251,10 @@ define(function(require) {
 
 	function alwaysUnary(fn, thisArg) {
 		return function() {
-			if (arguments.length > 1) {
-				fn.call(thisArg, slice.call(arguments));
-			} else {
+			if(arguments.length <= 1) {
 				fn.apply(thisArg, arguments);
+			} else {
+				fn.call(thisArg, slice.call(arguments));
 			}
 		};
 	}

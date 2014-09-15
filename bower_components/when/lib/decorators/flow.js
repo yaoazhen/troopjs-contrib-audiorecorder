@@ -3,7 +3,9 @@
 /** @author John Hann */
 
 (function(define) { 'use strict';
-define(function() {
+define(function(require) {
+
+	var setTimer = require('../timer').set;
 
 	return function flow(Promise) {
 
@@ -21,7 +23,32 @@ define(function() {
 		 * @returns {undefined}
 		 */
 		Promise.prototype.done = function(onResult, onError) {
-			this._handler.visit(this._handler.receiver, onResult, onError);
+			var h = this._handler;
+			h.when(this._maybeFatal, noop, this, h.receiver, onResult, onError);
+		};
+
+		/**
+		 * Check if x is a rejected promise, and if so, delegate to this._fatal
+		 * @private
+		 * @param {*} x
+		 */
+		Promise.prototype._maybeFatal = function(x) {
+			if((typeof x === 'object' || typeof x === 'function') && x !== null) {
+				// Delegate to promise._fatal in case it has been overridden
+				resolve(x)._handler.chain(this, void 0, this._fatal);
+			}
+		};
+
+		/**
+		 * Propagate fatal errors to the host environment.
+		 * @private
+		 */
+		Promise.prototype._fatal = function(e) {
+			if(this._handler._isMonitored()) {
+				this._handler.join()._fatal(e);
+			} else {
+				setTimer(function() { throw e; }, 0);
+			}
 		};
 
 		/**
@@ -33,7 +60,7 @@ define(function() {
 		 * @returns {*}
 		 */
 		Promise.prototype['catch'] = Promise.prototype.otherwise = function(onRejected) {
-			if (arguments.length < 2) {
+			if (arguments.length === 1) {
 				return origCatch.call(this, onRejected);
 			} else {
 				if(typeof onRejected !== 'function') {
@@ -71,28 +98,13 @@ define(function() {
 		 */
 		Promise.prototype['finally'] = Promise.prototype.ensure = function(handler) {
 			if(typeof handler !== 'function') {
+				// Optimization: result will not change, return same promise
 				return this;
 			}
 
-			return this.then(function(x) {
-				return runSideEffect(handler, this, identity, x);
-			}, function(e) {
-				return runSideEffect(handler, this, reject, e);
-			});
+			handler = isolate(handler, this);
+			return this.then(handler, handler);
 		};
-
-		function runSideEffect (handler, thisArg, propagate, value) {
-			var result = handler.call(thisArg);
-			return maybeThenable(result)
-				? propagateValue(result, propagate, value)
-				: propagate(value);
-		}
-
-		function propagateValue (result, propagate, x) {
-			return resolve(result).then(function () {
-				return propagate(x);
-			});
-		}
 
 		/**
 		 * Recover from a failure by returning a defaultValue.  If defaultValue
@@ -148,13 +160,15 @@ define(function() {
 			|| (predicate != null && predicate.prototype instanceof Error);
 	}
 
-	function maybeThenable(x) {
-		return (typeof x === 'object' || typeof x === 'function') && x !== null;
+	// prevent argument passing to f and ignore return value
+	function isolate(f, x) {
+		return function() {
+			f.call(this);
+			return x;
+		};
 	}
 
-	function identity(x) {
-		return x;
-	}
+	function noop() {}
 
 });
-}(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
+}(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));

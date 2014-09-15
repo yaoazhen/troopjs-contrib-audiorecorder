@@ -6,13 +6,6 @@
 define(function(require) {
 
 	var timer = require('../timer');
-	var TimeoutError = require('../TimeoutError');
-
-	function setTimeout(f, ms, x, y) {
-		return timer.set(function() {
-			f(x, y, ms);
-		}, ms);
-	}
 
 	return function timed(Promise) {
 		/**
@@ -23,17 +16,16 @@ define(function(require) {
 		 */
 		Promise.prototype.delay = function(ms) {
 			var p = this._beget();
-			this._handler.fold(handleDelay, ms, void 0, p._handler);
+
+			this._handler.chain(p._handler,
+				function delay(x) {
+					var h = this; // this = p._handler
+					timer.set(function() { h.resolve(x); }, ms);
+				},
+				p._handler.reject, p._handler.notify);
+
 			return p;
 		};
-
-		function handleDelay(ms, x, h) {
-			setTimeout(resolveDelay, ms, x, h);
-		}
-
-		function resolveDelay(x, h) {
-			h.resolve(x);
-		}
 
 		/**
 		 * Return a new promise that rejects after ms milliseconds unless
@@ -41,37 +33,36 @@ define(function(require) {
 		 * fulfills with the same value.
 		 * @param {number} ms milliseconds
 		 * @param {Error|*=} reason optional rejection reason to use, defaults
-		 *   to a TimeoutError if not provided
+		 *   to an Error if not provided
 		 * @returns {Promise}
 		 */
 		Promise.prototype.timeout = function(ms, reason) {
+			var hasReason = arguments.length > 1;
 			var p = this._beget();
-			var h = p._handler;
 
-			var t = setTimeout(onTimeout, ms, reason, p._handler);
+			var t = timer.set(onTimeout, ms);
 
-			this._handler.visit(h,
+			this._handler.chain(p._handler,
 				function onFulfill(x) {
 					timer.clear(t);
-					this.resolve(x); // this = h
+					this.resolve(x); // this = p._handler
 				},
 				function onReject(x) {
 					timer.clear(t);
-					this.reject(x); // this = h
+					this.reject(x); // this = p._handler
 				},
-				h.notify);
+				p._handler.notify);
 
 			return p;
+
+			function onTimeout() {
+				p._handler.reject(hasReason
+					? reason : new Error('timed out after ' + ms + 'ms'));
+			}
 		};
 
-		function onTimeout(reason, h, ms) {
-			var e = typeof reason === 'undefined'
-				? new TimeoutError('timed out after ' + ms + 'ms')
-				: reason;
-			h.reject(e);
-		}
-
 		return Promise;
+
 	};
 
 });
