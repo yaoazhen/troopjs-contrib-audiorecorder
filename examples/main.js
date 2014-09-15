@@ -24,6 +24,10 @@ require.config({
       main: 'dist/lodash.js'
     },
     {
+      name: 'troopjs',
+      main: 'maxi.js'
+    },
+    {
       name: 'poly',
       main: 'poly.js'
     },
@@ -48,7 +52,7 @@ require.config({
       location: '../'
     }
   ],
-  deps: ['when/monitor/console'],
+  deps: ['troopjs', 'when/monitor/console'],
   map: {
     '*': {
       template: 'mu-template/plugin',

@@ -19,7 +19,7 @@
   ],
   "dependencies": {
     "recorder.js": "garryyao/recorder.js#~0",
-    "troopjs-dom": ""
+    "troopjs": "^3"
   },
   "devDependencies": {
     "less": "",
