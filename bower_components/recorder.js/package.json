@@ -1,0 +1,21 @@
+{
+  "name": "recorder.js",
+  "version": "0.3.5",
+  "dependencies": {
+    "grunt": ">=0.4.1",
+    "underscore": "~1.5.2",
+    "load-grunt-tasks": "~0.2.0",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-uglify": "~0.2.7",
+    "grunt-contrib-copy": "~0.4.1",
+    "grunt-bump": "0.0.11",
+    "grunt-git-dist": "~0.4.0",
+    "grunt-util-options": "0.0.2",
+    "grunt-exec": "~0.4.2",
+    "grunt-git-describe": "~2.3.2",
+    "grunt-urequire": "~0.6.0"
+  },
+  "engines": {
+    "node": ">=0.6.0"
+  }
+}
