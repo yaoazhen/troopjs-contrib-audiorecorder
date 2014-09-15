@@ -1,6 +1,18 @@
 {
   "name": "troopjs-contrib-recorderjs",
   "version": "0.1.1",
+  "homepage": "https://github.com/troopjs/troopjs-contrib-audiorecorder",
+  "description": "audio recording component for TroopJS based on recorder.js",
+  "authors": [
+    "Garry Yao <yaojun85@gmail.com>"
+  ],
+  "keywords": [
+    "recorder.js",
+    "troopjs",
+    "audio",
+    "recording"
+  ],
+  "license": "MIT",
   "ignore": [
     "**/.*",
     "node_modules"

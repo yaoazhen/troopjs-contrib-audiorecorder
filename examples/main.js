@@ -16,7 +16,7 @@ require.config({
     },
     {
       "name": "recorder",
-      "location": "recorder.js/dist",
+      "location": "recorder.js",
       "main": "recorder.js"
     },
     {
