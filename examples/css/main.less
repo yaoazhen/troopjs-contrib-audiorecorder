@@ -1,0 +1,251 @@
+// Global - Variables and Mixins.
+
+.et-recorder {
+  @size: 100px; // Scalable recorder size, change to your prefered size.
+  @shadow-depth: @size*.0125;
+  @btn-depth: @size*.0125;
+  @chrome-color: #252525;
+  @btn-color: #a8a8a8;
+  @recording: #e94545;
+  @playing: #22a9db;
+  @playing-hover: lighten(@playing, 10%);
+
+  @icon-size: @size/8;
+  @dot-size: @icon-size*2;
+  @square-size: @icon-size*1.8;
+  @icon-width: @square-size;
+  @upload-size: @icon-size*1.2;
+
+  width: @size;
+  height: @size;
+  border-radius: @size/2;
+  background-color: @chrome-color;
+  box-shadow: inset 0px 2px 0px darken(@chrome-color, 20%), 1px 1px 0px #000, 2px 2px @shadow-depth #000;
+
+  @btn-size: @size*.75;
+  @hole-color: #151515;
+
+  .hole {
+    margin: auto;
+    background-color: @hole-color;
+    border: 1px solid @btn-color;
+    width: @btn-size;
+    height: @btn-size;
+    top: (@size - @btn-size)/2;
+    border-radius: @size*.38;
+    position: relative;
+  }
+
+  // cascading drop-down shadow.
+  .cascade-shadow(@color;@x;){
+    box-shadow:
+      inset @x 2*@x 0px lighten(@color, 5%),
+      inset 2*@x 4*@x 0px lighten(@color, 10%),
+      @x @x 0 darken(@color, 40%),
+      2*@x 2*@x 0 darken(@color, 60%),
+      3*@x 4*@x 0 darken(@color, 80%),
+      4*@x 8*@x 0 darken(@color, 100%);
+  }
+
+  .btn {
+    top: -@btn-depth;
+    display: block;
+    width: @btn-size;
+    height: @btn-size;
+    margin-left: auto;
+    margin-right: auto;
+    overflow: auto;
+    cursor: pointer;
+    position: relative;
+    background-image: linear-gradient(to top, darken(@btn-color, 80%) 0%, @btn-color 57%);
+    border-radius: @btn-size/2;
+    .cascade-shadow(@btn-color, @btn-size/200);
+  }
+
+  // fall-in effect for pressed button.
+  .btn-pressed {
+    top: 0;
+    box-shadow: inset 0px 2px 0px @btn-color;
+  }
+
+  &.recording,
+  &.playing,
+  &.uploading {
+    .btn-pressed();
+  }
+
+  .btn:active{
+    .btn-pressed();
+  }
+
+  .btn:active {
+    top: 0;
+    box-shadow: inset 0px 2px 0px @btn-color;
+  }
+
+  .base-icon() {
+    margin-left: 50%;
+    margin-top: 50%;
+    position: absolute;
+  }
+
+  &.start {
+    .icon {
+      .base-icon();
+      top: -@dot-size/2 - 2;
+      left: -@dot-size/2 - 2;
+      width: @dot-size;
+      height: @dot-size;
+      border-radius: @dot-size;
+      background-color: @recording;
+      border: 1px solid @btn-color;
+      box-shadow: inset 0 0 5px rgba(0, 0, 0, .3);
+      transition: background-color .3s;
+    }
+
+    .btn:hover .icon {
+      background-color: lighten(@recording, 10%);
+    }
+
+    .btn:active .icon {
+      background-color: @recording;
+    }
+  }
+
+  &.stopped {
+
+    .icon {
+      .base-icon();
+      width: 0px;
+      height: 0px;
+      left: -@icon-size/2;
+      top: -@icon-size;
+      border-top: @icon-size solid transparent;
+      border-bottom: @icon-size solid transparent;
+      border-left: @icon-width  solid @playing;
+      transition: border-left-color .3s;
+    }
+
+    .icon:before {
+      .icon();
+      content: " ";
+      border-top-width: @icon-size - 2;
+      border-bottom-width: @icon-size - 2;
+      border-left-width: @icon-width - 2;
+      left: -@icon-width + 1;
+      top: -@icon-size + 2;
+      border-left-color: lighten(@playing, 2%);
+    }
+
+    .icon:after {
+      .icon();
+      content: " ";
+      border-top-width: @icon-size - 6;
+      border-bottom-width: @icon-size - 6;
+      border-left-width: @icon-width - 6;
+      left: -@icon-width + 3;
+      top: -@icon-size + 6;
+      border-left-color: lighten(@playing, 4%);
+    }
+
+    .btn:hover {
+      .icon {
+        border-left-color: @playing-hover;
+      }
+      .icon:before {
+        border-left-color: lighten(@playing-hover, 2%);
+      }
+      .icon:after {
+        border-left-color: lighten(@playing-hover, 4%);
+      }
+    }
+
+    .btn:active {
+      .icon {
+        border-left-color: @recording;
+      }
+      .icon:before {
+        border-left-color: lighten(@recording, 2%);
+      }
+      .icon:after {
+        border-left-color: lighten(@recording, 4%);
+      }
+    }
+  }
+
+  &.recording, &.playing {
+    .icon {
+      .base-icon();
+      top: -@square-size/2;
+      left: -@square-size/2;
+      width: @square-size;
+      height: @square-size;
+      background-color: @recording;
+      border: 1px solid @btn-color;
+      box-shadow: inset 0 0 2px rgba(0, 0, 0, .3);
+      transition: background-color .3s;
+    }
+
+    .btn:hover .icon {
+      background-color: lighten(@recording, 10%);
+    }
+
+    .btn:active .icon {
+      background-color: @recording;
+    }
+  }
+
+  &.playing {
+    .icon {
+      background-color: @playing;
+    }
+    .btn:hover .icon {
+      background-color: lighten(@playing, 10%);
+    }
+    .btn:active .icon {
+      background-color: @playing;
+    }
+  }
+
+  &.upload, &.uploading {
+    .icon {
+      .base-icon();
+      width: 0px;
+      height: 0px;
+      left: -@upload-size;
+      top: -@upload-size;
+      border-bottom: @upload-size solid @playing;
+      border-left: @upload-size solid transparent;
+      border-right: @upload-size solid transparent;
+    }
+
+    .icon:after {
+      .base-icon();
+      content: " ";
+      top: @upload-size - 2;
+      left: -@upload-size/2;
+      width: @upload-size;
+      height: @upload-size;
+      background-color: @playing;
+    }
+
+    .btn:hover {
+      .icon {
+        border-bottom-color: lighten(@playing, 10%);
+      }
+      .icon:after {
+        background-color: lighten(@playing, 10%);
+      }
+    }
+  }
+
+  &.uploading {
+    .icon, .btn:hover .icon {
+      border-bottom-color: lighten(@recording, 10%);
+    }
+    .icon:after, .btn:hover .icon:after {
+      background-color: lighten(@recording, 10%);
+    }
+  }
+
+}

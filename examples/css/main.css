@@ -1,0 +1,212 @@
+.et-recorder {
+  width: 100px;
+  height: 100px;
+  border-radius: 50px;
+  background-color: #252525;
+  box-shadow: inset 0px 2px 0px #000000, 1px 1px 0px #000000, 2px 2px 1.25px #000000;
+}
+.et-recorder .hole {
+  margin: auto;
+  background-color: #151515;
+  border: 1px solid #a8a8a8;
+  width: 75px;
+  height: 75px;
+  top: 12.5px;
+  border-radius: 38px;
+  position: relative;
+}
+.et-recorder .btn {
+  top: -1.25px;
+  display: block;
+  width: 75px;
+  height: 75px;
+  margin-left: auto;
+  margin-right: auto;
+  overflow: auto;
+  cursor: pointer;
+  position: relative;
+  background-image: linear-gradient(to top, #000000 0%, #a8a8a8 57%);
+  border-radius: 37.5px;
+  box-shadow: inset 0.375px 0.75px 0px #b5b5b5, inset 0.75px 1.5px 0px #c2c2c2, 0.375px 0.375px 0 #424242, 0.75px 0.75px 0 #0f0f0f, 1.125px 1.5px 0 #000000, 1.5px 3px 0 #000000;
+}
+.et-recorder .btn-pressed {
+  top: 0;
+  box-shadow: inset 0px 2px 0px #a8a8a8;
+}
+.et-recorder.recording,
+.et-recorder.playing,
+.et-recorder.uploading {
+  top: 0;
+  box-shadow: inset 0px 2px 0px #a8a8a8;
+}
+.et-recorder .btn:active {
+  top: 0;
+  box-shadow: inset 0px 2px 0px #a8a8a8;
+}
+.et-recorder .btn:active {
+  top: 0;
+  box-shadow: inset 0px 2px 0px #a8a8a8;
+}
+.et-recorder.start .icon {
+  margin-left: 50%;
+  margin-top: 50%;
+  position: absolute;
+  top: -14.5px;
+  left: -14.5px;
+  width: 25px;
+  height: 25px;
+  border-radius: 25px;
+  background-color: #e94545;
+  border: 1px solid #a8a8a8;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s;
+}
+.et-recorder.start .btn:hover .icon {
+  background-color: #ee7373;
+}
+.et-recorder.start .btn:active .icon {
+  background-color: #e94545;
+}
+.et-recorder.stopped .icon {
+  margin-left: 50%;
+  margin-top: 50%;
+  position: absolute;
+  width: 0px;
+  height: 0px;
+  left: -6.25px;
+  top: -12.5px;
+  border-top: 12.5px solid transparent;
+  border-bottom: 12.5px solid transparent;
+  border-left: 22.5px solid #22a9db;
+  transition: border-left-color 0.3s;
+}
+.et-recorder.stopped .icon:before {
+  margin-left: 50%;
+  margin-top: 50%;
+  position: absolute;
+  width: 0px;
+  height: 0px;
+  left: -6.25px;
+  top: -12.5px;
+  border-top: 12.5px solid transparent;
+  border-bottom: 12.5px solid transparent;
+  border-left: 22.5px solid #22a9db;
+  transition: border-left-color 0.3s;
+  content: " ";
+  border-top-width: 10.5px;
+  border-bottom-width: 10.5px;
+  border-left-width: 20.5px;
+  left: -21.5px;
+  top: -10.5px;
+  border-left-color: #29adde;
+}
+.et-recorder.stopped .icon:after {
+  margin-left: 50%;
+  margin-top: 50%;
+  position: absolute;
+  width: 0px;
+  height: 0px;
+  left: -6.25px;
+  top: -12.5px;
+  border-top: 12.5px solid transparent;
+  border-bottom: 12.5px solid transparent;
+  border-left: 22.5px solid #22a9db;
+  transition: border-left-color 0.3s;
+  content: " ";
+  border-top-width: 6.5px;
+  border-bottom-width: 6.5px;
+  border-left-width: 16.5px;
+  left: -19.5px;
+  top: -6.5px;
+  border-left-color: #32b0df;
+}
+.et-recorder.stopped .btn:hover .icon {
+  border-left-color: #4dbbe3;
+}
+.et-recorder.stopped .btn:hover .icon:before {
+  border-left-color: #56bee5;
+}
+.et-recorder.stopped .btn:hover .icon:after {
+  border-left-color: #5ec1e6;
+}
+.et-recorder.stopped .btn:active .icon {
+  border-left-color: #e94545;
+}
+.et-recorder.stopped .btn:active .icon:before {
+  border-left-color: #ea4e4e;
+}
+.et-recorder.stopped .btn:active .icon:after {
+  border-left-color: #eb5757;
+}
+.et-recorder.recording .icon,
+.et-recorder.playing .icon {
+  margin-left: 50%;
+  margin-top: 50%;
+  position: absolute;
+  top: -11.25px;
+  left: -11.25px;
+  width: 22.5px;
+  height: 22.5px;
+  background-color: #e94545;
+  border: 1px solid #a8a8a8;
+  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s;
+}
+.et-recorder.recording .btn:hover .icon,
+.et-recorder.playing .btn:hover .icon {
+  background-color: #ee7373;
+}
+.et-recorder.recording .btn:active .icon,
+.et-recorder.playing .btn:active .icon {
+  background-color: #e94545;
+}
+.et-recorder.playing .icon {
+  background-color: #22a9db;
+}
+.et-recorder.playing .btn:hover .icon {
+  background-color: #4dbbe3;
+}
+.et-recorder.playing .btn:active .icon {
+  background-color: #22a9db;
+}
+.et-recorder.upload .icon,
+.et-recorder.uploading .icon {
+  margin-left: 50%;
+  margin-top: 50%;
+  position: absolute;
+  width: 0px;
+  height: 0px;
+  left: -15px;
+  top: -15px;
+  border-bottom: 15px solid #22a9db;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+}
+.et-recorder.upload .icon:after,
+.et-recorder.uploading .icon:after {
+  margin-left: 50%;
+  margin-top: 50%;
+  position: absolute;
+  content: " ";
+  top: 13px;
+  left: -7.5px;
+  width: 15px;
+  height: 15px;
+  background-color: #22a9db;
+}
+.et-recorder.upload .btn:hover .icon,
+.et-recorder.uploading .btn:hover .icon {
+  border-bottom-color: #4dbbe3;
+}
+.et-recorder.upload .btn:hover .icon:after,
+.et-recorder.uploading .btn:hover .icon:after {
+  background-color: #4dbbe3;
+}
+.et-recorder.uploading .icon,
+.et-recorder.uploading .btn:hover .icon {
+  border-bottom-color: #ee7373;
+}
+.et-recorder.uploading .icon:after,
+.et-recorder.uploading .btn:hover .icon:after {
+  background-color: #ee7373;
+}

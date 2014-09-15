@@ -1,0 +1,15 @@
+{
+  "name": "troopjs-dom",
+  "version": "5.1.5",
+  "ignore": [
+    "**/.*",
+    "node_modules"
+  ],
+  "dependencies": {
+    "troopjs-compose": "~3",
+    "troopjs-core": "~3",
+    "troopjs-jquery": "~3",
+    "troopjs-util": "~3",
+    "jquery": "~2"
+  }
+}

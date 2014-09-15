@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <base href="../" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge, requiresActiveX=true, chrome=1">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+  <title>Troopjs Recorder Widget Sample</title>
+  <!-- CSS -->
+  <link rel="stylesheet" href="examples/css/main.css" />
+  <link rel="stylesheet" href="bower_components/c3/c3.css" />
+  <style>
+    .et-recorder {
+      display: inline-block;
+    }
+
+    #chart .c3-line-avg {
+      stroke-dasharray: 5 5;
+    }
+  </style>
+  <script src="bower_components/requirejs/require.js"></script>
+  <script src="examples/main.js"></script>
+</head>
+<body>
+
+<div class="et-recorder" data-weave="example/widget/main">
+  <div class="hole">
+    <a href="javascript:;" class="btn primary">
+      <div class="icon"></div>
+    </a>
+  </div>
+</div>
+
+<!--[if gte IE 9]><!-->
+<div id="chart" class="volume-monitor" data-weave="example/widget/volume"></div>
+<!--<![endif]-->
+</body>
+</html>

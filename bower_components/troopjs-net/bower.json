@@ -1,0 +1,20 @@
+{
+  "name": "troopjs-net",
+  "version": "0.0.5",
+  "authors": [
+    "Mikael Karon"
+  ],
+  "description": "TroopJS network module",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test"
+  ],
+  "dependencies": {
+    "troopjs-core": "~3",
+    "troopjs-util": "~3",
+    "jquery": "~2"
+  }
+}
