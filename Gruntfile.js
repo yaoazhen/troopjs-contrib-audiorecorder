@@ -27,8 +27,7 @@ module.exports = function (grunt) {
     });
   }
 
-  // Project configuration.
-  grunt.initConfig({
+  var config = {
     pkg: grunt.file.readJSON('package.json'),
     bowerDir: 'bower_components',
     clean: {
@@ -83,6 +82,15 @@ module.exports = function (grunt) {
           }
         ]
       }
+    },
+    'gh-pages': {
+      options: {
+        base: '.',
+        repo: '<%= pkg.repository.url %>',
+        branch: 'gh-pages',
+        message: 'update static files'
+      },
+      src: ['**/*', '!node_modules/**']
     },
     // Watchers and live-reload for LESS files.
     watch: {
@@ -167,5 +175,8 @@ module.exports = function (grunt) {
         dest: 'dist/main.min.js'
       }
     }
-  });
+  };
+
+  // Project configuration.
+  grunt.initConfig(config);
 };
