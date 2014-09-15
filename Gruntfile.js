@@ -90,7 +90,7 @@ module.exports = function (grunt) {
         branch: 'gh-pages',
         message: 'update static files'
       },
-      src: ['**/*', '!node_modules/**'],
+      src: ['**/*', '!node_modules/**']
     },
     // Watchers and live-reload for LESS files.
     watch: {
