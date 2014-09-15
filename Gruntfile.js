@@ -5,12 +5,12 @@ module.exports = function (grunt) {
   require('load-grunt-tasks')(grunt);
 
   grunt.registerTask('default', [
-    'jshint:source',
     'clean:dist',
     'less',
     'autoprefixer',
     'requirejs',
-    'uglify'
+    'uglify',
+    'processhtml'
   ]);
 
   grunt.registerTask('serve', function () {
@@ -20,12 +20,6 @@ module.exports = function (grunt) {
       'watch'
     ]);
   });
-
-  function includeSource(patterns) {
-    return grunt.util._.map(grunt.file.expand(patterns), function (file) {
-      return ['<%= pkg.name %>', file.replace(/\.js$/, '')].join('/');
-    });
-  }
 
   var config = {
     pkg: grunt.file.readJSON('package.json'),
@@ -152,27 +146,31 @@ module.exports = function (grunt) {
     requirejs: {
       dist: {
         options: {
-          out: 'dist/main.js',
-          include: includeSource(['widget/**/*.js', 'service/**/*.js']),
-          paths: {
-            'troopjs-recorder': '.',
-            'troopjs-core': 'empty:',
-            'troopjs-browser': 'empty:',
-            'recorder': 'empty:',
-            'lodash': 'empty:',
-            'when': 'empty:',
-            'jquery': 'empty:',
-            'poly': 'empty:',
-            'tinycolor': 'empty:'
-          },
-          optimize: 'none'
+          baseUrl: 'bower_components',
+          mainConfigFile: 'examples/main.js',
+          out: 'example.js',
+          name: 'example',
+          findNestedDependencies: true,
+          wrapShim: true,
+          skipDirOptimize: true,
+          skipModuleInsertion: true,
+          optimize: 'none',
+          optimizeCss: 'none'
+        }
+      }
+    },
+    processhtml: {
+      dist: {
+        files: {
+          'index.html': 'examples/index.html'
         }
       }
     },
     uglify: {
       dist: {
-        src: ['dist/main.js'],
-        dest: 'dist/main.min.js'
+        files: {
+          'example.js': 'example.js'
+        }
       }
     }
   };

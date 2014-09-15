@@ -61,12 +61,6 @@ require.config({
     }
   },
   config: {
-    'troopjs-browser/loom/config': {
-      weave: 'data-weave-2',
-      woven: 'data-woven-2',
-      unweave: 'data-unweave-2'
-    },
-
     // Configure recording audio upload server.
     'troopjs-recorder/service/recorder': {
       upload:{
@@ -83,7 +77,9 @@ require.config({
   callback: function loadDeps() {
     require([
       'jquery',
-      'troopjs-dom/application/widget'
+      'troopjs-dom/application/widget',
+      'example/widget/main',
+      'example/widget/volume'
     ], function Bootstrap(jQuery, Application) {
       jQuery(function ready($) {
         Application($('html'), 'bootstrap').start();
