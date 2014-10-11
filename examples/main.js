@@ -4,28 +4,23 @@
 
 require.config({
   baseUrl: 'bower_components',
-  // define AMD package layout for all dependencies.
   packages: [
     {
       name: 'jquery',
       main: 'dist/jquery.js'
     },
     {
-      "name": "tinycolor",
-      "main": "tinycolor.js"
+      name: 'tinycolor',
+      main: 'tinycolor.js'
     },
     {
-      "name": "recorder",
-      "location": "recorder.js",
-      "main": "recorder.js"
+      name: 'recorder',
+      location: 'recorder.js',
+      main: 'recorder.js'
     },
     {
       name: 'lodash',
       main: 'dist/lodash.js'
-    },
-    {
-      name: 'troopjs',
-      main: 'maxi.js'
     },
     {
       name: 'poly',
@@ -44,15 +39,17 @@ require.config({
       main: 'd3.js'
     },
     {
-      "name": "example",
+      name: 'example',
       location: '../examples'
     },
     {
-      "name": "troopjs-recorder",
+      name: 'troopjs-recorder',
       location: '../'
     }
   ],
-  deps: ['troopjs', 'when/monitor/console'],
+  deps: [
+    'when/monitor/console'
+  ],
   map: {
     '*': {
       template: 'mu-template/plugin',
@@ -61,29 +58,28 @@ require.config({
     }
   },
   config: {
-    // Configure recording audio upload server.
     'troopjs-recorder/service/recorder': {
-      upload:{
+      upload: {
         method: 'POST',
-        audioParam: "file",
+        audioParam: 'file',
         audioFormat: 1,
         url: 'http://up.qiniu.com',
         params: {
-          "token": "WaUUPsnoEg6QXbzdO8sgIEgerhKUAaztnH_C-1Pk:VLPpjFyIVvjQd-PmNbLerpPe7_o=:eyJzY29wZSI6InRyb29wanMiLCJkZWFkbGluZSI6MTM5ODQ1MTQ3Nn0=",
+          token: 'WaUUPsnoEg6QXbzdO8sgIEgerhKUAaztnH_C-1Pk:VLPpjFyIVvjQd-PmNbLerpPe7_o=:eyJzY29wZSI6InRyb29wanMiLCJkZWFkbGluZSI6MTM5ODQ1MTQ3Nn0='
         }
       }
     }
   },
   callback: function loadDeps() {
-    require([
-      'jquery',
-      'troopjs-dom/application/widget',
-      'example/widget/main',
-      'example/widget/volume'
-    ], function Bootstrap(jQuery, Application) {
-      jQuery(function ready($) {
-        Application($('html'), 'bootstrap').start();
-      });
+  require([
+    'jquery',
+    'troopjs-dom/application/widget',
+    'example/widget/main',
+    'example/widget/volume'
+  ], function Bootstrap(jQuery, Application) {
+    jQuery(function ready($) {
+      Application($('html'), 'bootstrap').start();
     });
-  }
+  });
+}
 });

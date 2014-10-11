@@ -19,7 +19,8 @@
   ],
   "dependencies": {
     "recorder.js": "garryyao/recorder.js#~0",
-    "troopjs": "^3"
+    "troopjs-dom": "",
+    "lodash": ""
   },
   "devDependencies": {
     "less": "",
