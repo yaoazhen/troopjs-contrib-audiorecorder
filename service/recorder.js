@@ -4,8 +4,8 @@ define([
   'recorder/require',
   'recorder',
   'when',
-  'lodash'
-], function (module, Service, recorderRequire, Recorder, when, _) {
+  'jquery'
+], function (module, Service, recorderRequire, Recorder, when, $) {
   'use strict';
 
   var moduleCfg = module.config();
@@ -86,7 +86,7 @@ define([
         // 1. module config;
         // 2. function params;
         // 3. local callbacks.
-        var cfg = _.extend({}, uploadCfg, options, {
+        var cfg = $.extend({}, uploadCfg, options, {
           success: function (responseText) {
             var retval = JSON.parse(responseText);
 
