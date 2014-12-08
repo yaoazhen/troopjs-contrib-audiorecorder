@@ -8,6 +8,9 @@ define([
 ], function (module, Service, recorderRequire, Recorder, when, $) {
   'use strict';
 
+  var FLASHCONTAINER = 'flashContainer';
+  var ONFLASHSECURITY = 'onFlashSecurity';
+
   var moduleCfg = module.config();
 
   var uploadCfg = moduleCfg.upload;
@@ -15,13 +18,23 @@ define([
 
   var service = Service.create({
     'sig/initialize': function () {
+      var me = this;
+
       // Load the SWF for initializing recorder which sits by side of the module main js.
       var swfFilePath = recorderRequire.toUrl("recorder.swf");
       var df = when.defer();
-      Recorder.initialize({
+
+      var options = {
         swfSrc: swfFilePath,
         initialized: df.resolve
+      };
+
+      moduleCfg[FLASHCONTAINER] && (options[FLASHCONTAINER] = moduleCfg[FLASHCONTAINER]);
+      moduleCfg[ONFLASHSECURITY] && (options[ONFLASHSECURITY] = function () {
+        me.publish('recorder/flashSecurity');
       });
+
+      Recorder.initialize(options);
       return df.promise;
     },
 
