@@ -26,7 +26,13 @@ define([
 
       var options = {
         swfSrc: swfFilePath,
-        initialized: df.resolve
+        initialized: df.resolve,
+        onPrivacyChange: function (allowed) {
+          me.publish('recorder/onPrivacyChange', allowed);
+        },
+        noMicrophone: function () {
+          me.publish('recorder/noMicrophone');
+        }
       };
 
       moduleCfg[FLASHCONTAINER] && (options[FLASHCONTAINER] = moduleCfg[FLASHCONTAINER]);
@@ -43,6 +49,10 @@ define([
       this.emit("sig/started");
     },
 
+    'hub/recorder/setupPrivacy': function () {
+      Recorder.setupPrivacy();
+    },
+
     'hub/recorder/record': function () {
       var me = this;
       return me.publish('recorder/stop').then(function () {
@@ -55,6 +65,9 @@ define([
             },
             progress: function (milliseconds, volume) {
               me.publish('recorder/record/progress', milliseconds, volume);
+            },
+            hold: function () {
+              me.publish('recorder/record/hold');
             },
             cancel: reject
           });
