@@ -53,6 +53,10 @@ define([
       Recorder.setupPrivacy();
     },
 
+    'hub/recorder/hideFlash': function () {
+      Recorder.triggerEvent('hideFlash');
+    },
+
     'hub/recorder/record': function () {
       var me = this;
       return me.publish('recorder/stop').then(function () {
