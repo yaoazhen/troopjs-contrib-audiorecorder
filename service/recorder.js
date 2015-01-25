@@ -15,14 +15,22 @@ define([
 
   var service = Service.create({
     'sig/initialize': function () {
+      var me = this;
       // Load the SWF for initializing recorder which sits by side of the module main js.
       var swfFilePath = recorderRequire.toUrl("recorder.swf");
       var df = when.defer();
+      var p = df.promise;
+
+      p.catch(function (incompatible) {
+        me.publish('recorder/incompatible', incompatible);
+      });
+
       Recorder.initialize({
         swfSrc: swfFilePath,
-        initialized: df.resolve
+        initialized: df.resolve,
+        incompatible: df.reject
       });
-      return df.promise;
+      return p;
     },
 
     'sig/start': function () {
