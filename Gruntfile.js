@@ -8,9 +8,7 @@ module.exports = function (grunt) {
     'clean:dist',
     'less',
     'autoprefixer',
-    'requirejs',
-    'uglify',
-    'processhtml'
+    'requirejs'
   ]);
 
   grunt.registerTask('serve', function () {
@@ -156,20 +154,6 @@ module.exports = function (grunt) {
           skipModuleInsertion: true,
           optimize: 'none',
           optimizeCss: 'none'
-        }
-      }
-    },
-    processhtml: {
-      dist: {
-        files: {
-          'index.html': 'examples/index.html'
-        }
-      }
-    },
-    uglify: {
-      dist: {
-        files: {
-          'example.js': 'example.js'
         }
       }
     }
