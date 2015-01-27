@@ -21,11 +21,13 @@ define([
       this.cls = this.$element.attr('class');
       var me = this;
       if(Service[PHASE] !== 'started'){
+        var df = when.defer();
         Service.on('sig/started', function() {
+          df.resolve();
           me.state(STATES.START);
         });
         me.state(STATES.DISABLE);
-        return;
+        return df.promise;
       }
       me.state(STATES.START);
     },
