@@ -1,6 +1,6 @@
 {
   "name": "troopjs-recorderjs",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "homepage": "https://github.com/troopjs/troopjs-contrib-audiorecorder",
   "description": "audio recording component for TroopJS based on recorder.js",
   "authors": [

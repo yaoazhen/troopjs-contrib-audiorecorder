@@ -1,6 +1,6 @@
 {
   "name": "troopjs-recorder",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "dependencies": {},
   "description": "audio recording component for TroopJS based on recorder.js",
   "main": "Gruntfile.js",
