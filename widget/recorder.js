@@ -7,7 +7,7 @@ define([
   'when',
   './states',
   '../service/recorder'
-], function (Widget, when, STATES, Service) {
+], function (Widget, when, STATES, service) {
   'use strict';
 
   var CONFIGURATION = 'configuration';
@@ -20,16 +20,10 @@ define([
     'sig/start': function () {
       this.cls = this.$element.attr('class');
       var me = this;
-      if(Service[PHASE] !== 'started'){
-        var df = when.defer();
-        Service.on('sig/started', function() {
-          df.resolve();
-          me.state(STATES.START);
-        });
-        me.state(STATES.DISABLE);
-        return df.promise;
-      }
-      me.state(STATES.START);
+      service.then(function () {
+        me.state(STATES.START);
+      });
+      me.state(STATES.DISABLE);
     },
 
     record: function () {

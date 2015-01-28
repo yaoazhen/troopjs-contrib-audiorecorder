@@ -20,15 +20,14 @@ define([
       var swfFilePath = recorderRequire.toUrl("recorder.swf");
       var df = when.defer();
       var p = df.promise;
-
-      p.catch(function (incompatible) {
-        me.publish('recorder/incompatible', incompatible);
-      });
-
       Recorder.initialize({
         swfSrc: swfFilePath,
         initialized: df.resolve,
-        incompatible: df.reject
+        incompatible: function (reason) {
+          var err = new Error('incompatible flash');
+          err.reason = reason;
+          df.reject(err);
+        }
       });
       return p;
     },
@@ -114,6 +113,5 @@ define([
       });
     }
   });
-  service.start();
-  return service;
+  return service.start();
 });
