@@ -20,7 +20,7 @@ require.config({
     },
     {
       name: 'lodash',
-      main: 'dist/lodash.js'
+      main: 'lodash.js'
     },
     {
       name: 'poly',
