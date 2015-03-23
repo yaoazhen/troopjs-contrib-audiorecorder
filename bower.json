@@ -19,15 +19,14 @@
   ],
   "dependencies": {
     "recorder.js": "garryyao/recorder.js#~0",
-    "troopjs-dom": "",
-    "lodash": ""
+    "troopjs": "3.0.0-pr.2+fa7fcdb"
   },
   "devDependencies": {
     "less": "",
     "troopjs-requirejs": "",
     "mu-template": "",
     "tinycolor": "~0",
-    "lodash": "",
+    "lodash": "^3.5.0",
     "c3": "^0"
   }
 }
