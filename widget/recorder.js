@@ -11,7 +11,6 @@ define([
   'use strict';
 
   var CONFIGURATION = 'configuration';
-  var PHASE = 'phase';
 
   // Handles the widget instantiation.
   return Widget.extend(function ($element, name, options) {
