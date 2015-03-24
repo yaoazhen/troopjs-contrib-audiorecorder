@@ -8,6 +8,9 @@ define([
 ], function (module, Service, recorderRequire, Recorder, when, $) {
   'use strict';
 
+  var FLASH_CONTAINER = 'flashContainer';
+  var ON_FLASH_SECURITY = 'onFlashSecurity';
+
   var moduleCfg = module.config();
 
   var uploadCfg = moduleCfg.upload;
@@ -19,22 +22,44 @@ define([
       // Load the SWF for initializing recorder which sits by side of the module main js.
       var swfFilePath = recorderRequire.toUrl("recorder.swf");
       var df = when.defer();
-      var p = df.promise;
-      Recorder.initialize({
+      var options = {
         swfSrc: swfFilePath,
         initialized: df.resolve,
         incompatible: function (reason) {
           var err = new Error('incompatible flash');
           err.reason = reason;
           df.reject(err);
+        },
+
+        onPrivacyChange: function (allowed) {
+          me.publish('recorder/onPrivacyChange', allowed);
+        },
+
+        noMicrophone: function () {
+          me.publish('recorder/noMicrophone');
         }
+      };
+
+      moduleCfg[FLASH_CONTAINER] && (options[FLASH_CONTAINER] = moduleCfg[FLASH_CONTAINER]);
+      moduleCfg[ON_FLASH_SECURITY] && (options[ON_FLASH_SECURITY] = function () {
+        me.publish('recorder/onFlashSecurity');
       });
-      return p;
+
+      Recorder.initialize(options);
+      return df.promise;
     },
 
     'sig/start': function () {
       // TODO: Hack for 2.x to notify when this service has initialized.
       this.emit("sig/started");
+    },
+
+    'hub/recorder/setupPrivacy': function () {
+      Recorder.setupPrivacy();
+    },
+
+    'hub/recorder/hideFlash': function () {
+      Recorder.triggerEvent('hideFlash');
     },
 
     'hub/recorder/record': function () {
@@ -49,6 +74,9 @@ define([
             },
             progress: function (milliseconds, volume) {
               me.publish('recorder/record/progress', milliseconds, volume);
+            },
+            hold: function () {
+              me.publish('recorder/record/hold');
             },
             cancel: reject
           });
